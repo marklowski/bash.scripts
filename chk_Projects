@@ -1,0 +1,35 @@
+#!/bin/bash
+# Check for Commits
+ConfigFile="$HOME/.chkProjects.config"
+Projects=$(cat $ConfigFile)
+for Line in $Projects
+do
+	GITBASED=.git
+	# Loop all sub-directories
+	for f in $Line*
+	do
+		if [[ -d $f ]]; then
+			cd $f
+			MSG_LOCAL="";
+
+			if [ -d "$GITBASED" ]; then
+				TEST=$(git status);
+				# Check Local Repository for changes
+				if [[ $TEST == *"nothing to commit"* ]]; then
+					MSG_LOCAL=": No Changes "
+					# Check if git status has unstaged changes
+				elif [[ $TEST == *"Changes not staged for commit"* ]]; then
+					MSG_LOCAL=": Unstaged changes "
+					# Check if git status has uncommitted changes
+				elif [[ $TEST == *"Untracked files"* ]]; then
+					MSG_LOCAL=": You forgot to commit some files "
+				fi
+
+				echo ${f##*/}$MSG_LOCAL
+				cd ..
+			else
+				MSG_LOCAL=": Not a valid git project"
+			fi
+		fi
+	done
+done

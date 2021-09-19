@@ -1,0 +1,43 @@
+#!/bin/bash
+#create Project on Local Machine & Remote Machine
+
+Create_Git_Repository() {
+	#Create Folder when not existent && move into it
+	mkdir -p ./$REPO
+	cd ./$REPO
+	if [ ! -d ".git" ]; then
+	  git init
+	  git remote add pi git@192.168.178.202:/mnt/git/$REPO.git
+	fi
+}
+
+Create_Github_Repository() {
+	#Create GitHub Repo
+	gh repo create $REPO --confirm $OPT
+	git remote rename origin github
+}
+
+Create_Git_Remote() {
+	#Call Repo Create Script on Raspberry Pi
+	ssh git@192.168.178.202 "git-new-repo $REPO"
+}
+
+OPT=$1
+REPO=$2
+
+if [[ -n "$OPT" && -n "$REPO" ]]; then
+  if [[ "$OPT" == "--public" || "$OPT" == "--private" ]]; then
+	echo "Github Repo"
+	Create_Git_Repository
+	Create_Git_Remote
+	Create_Github_Repository
+  elif [ "$OPT" == "--local" ]; then
+	echo "Raspberry Pi Repo"
+	Create_Git_Repository
+	Create_Git_Remote
+  else
+    echo "Invalid Option"
+  fi
+else
+  echo "Invalid Program execution create_Project -Option RepoName"
+fi

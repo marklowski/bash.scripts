@@ -1,0 +1,67 @@
+#!/bin/bash
+#PRP WorkScript
+Reminder_Folder="$HOME/.reminders"
+Reminder_File="$HOME/.reminders/.reminder.txt"
+PRP_Folder="/mnt/d/file-managment/p/prp"
+CurrentDate=`date +"%Y-%m-%d"`
+
+List_Reminder() {
+
+    ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
+    ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
+    cat $Reminder_File    
+}
+
+Clear_Reminder() {
+    
+    ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
+    ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
+    > $Reminder_File
+}
+
+Add_Reminder() {    
+    ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
+    ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
+    echo "$1" >> $Reminder_File
+}
+
+Git_Pull() {
+    ( [ -d "$PRP_Folder" ] ) &&
+    cd $PRP_Folder &&
+    git pull pi master
+}
+
+Git_Push() {
+    ( [ -d "$PRP_Folder" ] ) &&
+    cd $PRP_Folder &&
+    git push pi master
+}
+
+Git_Commit() {
+    ( [ -d "$PRP_Folder" ] ) && cd $PRP_Folder &&
+    [[ $1 == "H" ]] && PRP_Commit="${CurrentDate}: From HomeOffice" ||
+    PRP_Commit="${CurrentDate}: From Office"
+    git add . &&
+    git commit -m "$PRP_Commit"
+}
+
+while [ -n "$1" ]; do
+    case "$1" in
+        -l) List_Reminder;;
+        -c) Clear_Reminder;;
+        -g) Git_Pull;;
+        -a) 
+            add_arg="$2"
+            Add_Reminder "$add_arg"
+            shift
+            ;;
+        -s) 
+            set_arg="$2"
+            Git_Commit "$set_arg"
+            Git_Push
+            shift
+            ;;
+        *) echo "Option $1 not recognized" ;;
+    esac
+    shift
+done
