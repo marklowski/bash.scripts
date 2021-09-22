@@ -1,43 +1,48 @@
 #!/bin/bash
 #PRP WorkScript
-Reminder_Folder="$HOME/.reminders"
-Reminder_File="$HOME/.reminders/.reminder.txt"
-PRP_Folder="/mnt/d/file-managment/p/prp"
+ConfigFile="$HOME/.script_configs/.prpScript.config"
+Reminder_Folder="$HOME/.script_configs"
+Reminder_File="$HOME/.script_configs/.reminder.txt"
+PRP_Folder=$(cat $ConfigFile)
 CurrentDate=`date +"%Y-%m-%d"`
 
 List_Reminder() {
 
     ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
     ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
-    cat $Reminder_File    
+    cat $Reminder_File
 }
 
 Clear_Reminder() {
-    
+
     ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
     ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
     > $Reminder_File
 }
 
-Add_Reminder() {    
+Add_Reminder() {
+
     ( [ -d "$Reminder_Folder" ] || mkdir $Reminder_Folder ) &&
     ( [ -e "$Reminder_File" ] || touch $Reminder_File ) &&
     echo "$1" >> $Reminder_File
 }
 
 Git_Pull() {
+
     ( [ -d "$PRP_Folder" ] ) &&
     cd $PRP_Folder &&
     git pull pi master
 }
 
 Git_Push() {
+
     ( [ -d "$PRP_Folder" ] ) &&
     cd $PRP_Folder &&
     git push pi master
 }
 
 Git_Commit() {
+
     ( [ -d "$PRP_Folder" ] ) && cd $PRP_Folder &&
     [[ $1 == "H" ]] && PRP_Commit="${CurrentDate}: From HomeOffice" ||
     PRP_Commit="${CurrentDate}: From Office"
@@ -50,12 +55,12 @@ while [ -n "$1" ]; do
         -l) List_Reminder;;
         -c) Clear_Reminder;;
         -g) Git_Pull;;
-        -a) 
+        -a)
             add_arg="$2"
             Add_Reminder "$add_arg"
             shift
             ;;
-        -s) 
+        -s)
             set_arg="$2"
             Git_Commit "$set_arg"
             Git_Push

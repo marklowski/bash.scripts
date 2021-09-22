@@ -1,6 +1,6 @@
 #!/bin/bash
 # Check for Commits
-ConfigFile="$HOME/.chkProjects.config"
+ConfigFile="$HOME/.script_configs/.chkProjects.config"
 Projects=$(cat $ConfigFile)
 for Line in $Projects
 do
