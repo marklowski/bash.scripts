@@ -4,7 +4,8 @@
 GIT='/mnt/git/'
 REPO=$1
 GitRepo="$GIT$REPO.git"
+PostReceiveHook="$HOME/post-receive"
 
-[[ ! -d "$GitRepo" ]] && mkdir "$GitRepo" &&
-  cd $GitRepo && git init --bare ||
+[[ ! -d "$GitRepo" ]] && echo $GitRepo > $HOME/manageNewProjects.txt && mkdir "$GitRepo" &&
+  cd $GitRepo && git init --bare && cp $PostReceiveHook ./hooks ||
   echo 'Git Repository already exists'
