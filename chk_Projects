@@ -23,6 +23,8 @@ do
 					# Check if git status has uncommitted changes
 				elif [[ $TEST == *"Untracked files"* ]]; then
 					MSG_LOCAL=": You forgot to commit some files "
+				elif [[ $TEST == *"Changes to be committed"* ]]; then
+					MSG_LOCAL=": Staged Changes but not Commited "
 				fi
 
 				echo ${f##*/}$MSG_LOCAL
