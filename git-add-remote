@@ -1,0 +1,15 @@
+#!/bin/bash
+# remove old Git-Remote 
+# add new Git-Remote
+
+clear
+
+repo=${PWD##*/}
+
+printf 'Current Repository: %s\n' "${PWD##*/}"
+
+git remote remove pi
+
+git remote add pi git@192.168.178.202:/mnt/git/$repo.git
+
+git remote -v
