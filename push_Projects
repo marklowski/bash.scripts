@@ -1,0 +1,18 @@
+#!/bin/bash
+#Try to Push Commits to Raspi
+ConfigFile=$HOME/.script-configs/.pushChanges.raspi
+Projects=$(cat $ConfigFile)
+
+for line in $Projects
+do
+	GITBASED=.git
+	if[[ -d $line]]; then
+		cd $line
+		if[[ -d "$GITBASED" ]]; then
+			gp pi
+			cd ..
+		fi
+	fi
+done
+
+> ConfigFile
