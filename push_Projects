@@ -1,14 +1,21 @@
 #!/bin/bash
 #Try to Push Commits to Raspi
 ConfigFile="$HOME/.script_configs/.pushChanges.raspi"
-Projects=$(cat $ConfigFile)
+Projects=$(awk '!a[$0]++' $ConfigFile)
 
 clear
 echo "...cycling through config file "
+echo ""
 counter=0
 
 for line in $Projects
 do
+	if [ $counter -gt 3 ]; then
+		echo "Delay of 30 Seconds because Pi not available"
+		counter=0
+		sleep 30
+	fi
+
 	GITBASED=.git
 	if [[ -d $line ]]; then
 		cd $line
@@ -18,15 +25,8 @@ do
 			counter=$[$counter +1]
 		fi
 	fi
-
 	echo ""
-
-	if [ $counter -gt 3 ]; then
-		echo "Delay of 30 Seconds because Pi not available"
-		counter=0
-		sleep 30
-	fi
 done
 
 echo "...now clearing config file"
-> ConfigFile
+> $ConfigFile
