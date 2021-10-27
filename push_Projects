@@ -13,7 +13,7 @@ _CONFIG_FILE="$HOME/.script_configs/.pushChanges.raspi"
 _PROJECTS=$(awk '!a[$0]++' $_CONFIG_FILE)
 
 pushProjects () {
-	counter
+	counter=1
 	clear
 
 	echo -e "${_WHITE}${_BOLD}Cycling through config file ${_RESET} \n"
