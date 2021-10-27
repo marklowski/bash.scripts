@@ -1,43 +1,85 @@
 #!/bin/bash
-#create Project on Local Machine & Remote Machine
+# create Project on Local Machine & Remote Machine
 
-Create_Git_Repository() {
-	#Create Folder when not existent && move into it
-	mkdir -p ./$REPO
-	cd ./$REPO
+# ASCII Coloring
+_RED="\e[0;31m"
+_CYAN="\e[0;36m"
+_YELLOW="\e[0;33m"
+_BLUE="\e[0;34m"
+_PURPLE="\e[0;35m"
+_WHITE="\e[0;37m"
+_BOLD="\e[1m"
+_RESET="\e[0m"
+
+# Global Variables
+_OPTION=""
+_REPOSITORY=""
+
+create_Git_Repository() {
+	# Create Folder when not existent && move into it
+	mkdir -p ./$_REPOSITORY
+	cd ./$_REPOSITORY
 	if [ ! -d ".git" ]; then
 	  git init
-	  git remote add pi git@192.168.178.202:/mnt/git/$REPO.git
+	  git remote add pi git@192.168.178.202:/mnt/git/$_REPOSITORY.git
 	fi
 }
 
-Create_Github_Repository() {
-	#Create GitHub Repo
-	gh repo create $REPO --confirm $OPT
+create_Github_Repository() {
+	# Create GitHub Repo
+	gh repo create $_REPOSITORY --confirm $_OPTION
 	git remote rename origin github
 }
 
-Create_Git_Remote() {
-	#Call Repo Create Script on Raspberry Pi
-	ssh git@192.168.178.202 "git-new-repo $REPO"
+create_Git_Remote() {
+	# Call Repo Create Script on Raspberry Pi
+	ssh git@192.168.178.202 "git-new-repo $_REPOSITORY"
 }
 
-OPT=$1
-REPO=$2
 
-if [[ -n "$OPT" && -n "$REPO" ]]; then
-  if [[ "$OPT" == "--public" || "$OPT" == "--private" ]]; then
-	echo "Github Repo"
-	Create_Git_Repository
-	Create_Git_Remote
-	Create_Github_Repository
-  elif [ "$OPT" == "--local" ]; then
-	echo "Raspberry Pi Repo"
-	Create_Git_Repository
-	Create_Git_Remote
-  else
-    echo "Invalid Option"
-  fi
-else
-  echo "Invalid Program execution create_Project -Option RepoName"
-fi
+while getopts ":hl:p:i:" opt; do
+	case ${opt} in
+		h )
+			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
+			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} Create Local Repository & Repository on RaspberryPi"
+			echo -e "${_WHITE}${_BOLD}-p: ${_RESET} Create ${_BOLD}Public${_RESET} Github Repository"
+			echo -e "${_WHITE}${_BOLD}-i: ${_RESET} Create ${_BOLD}Private${_RESET} Github Repository"
+			exit 1
+			;;
+		l )
+			echo -e "${_CYAN}${_BOLD}Creating Raspberry Pi Repository:${_RESET} $OPTARG\n"
+			_REPOSITORY=$OPTARG
+
+			create_Git_Repository
+			create_Git_Remote
+			;;
+		p )
+			echo -e "${_CYAN}${_BOLD}Creating Public Github Repository:${_RESET} $OPTARG \n"
+			_REPOSITORY=$OPTARG
+			_OPTION="--public"
+
+			create_Git_Repository
+			create_Git_Remote
+			create_Github_Repository
+
+			;;
+		i )
+			echo -e "${_CYAN}${_BOLD}Creating Private Github Repository:${_RESET} $OPTARG \n"
+			_REPOSITORY=$OPTARG
+            _OPTION="--private"
+
+			create_Git_Repository
+			create_Git_Remote
+			create_Github_Repository
+			;;
+		\? )
+			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG \n" 1>&2
+			exit 1
+			;;
+		: )
+			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} -$OPTARG requires an argument \n" 1>&2
+			exit 1
+			;;
+	esac
+done
+shift $((OPTIND -1))

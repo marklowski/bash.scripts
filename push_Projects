@@ -16,8 +16,7 @@ pushProjects () {
 	counter
 	clear
 
-	echo -e "${_WHITE}${_BOLD}Cycling through config file ${_RESET}"
-	echo ""
+	echo -e "${_WHITE}${_BOLD}Cycling through config file ${_RESET} \n"
 
 	for line in $_PROJECTS
 	do
