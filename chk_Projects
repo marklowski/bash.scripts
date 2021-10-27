@@ -12,10 +12,10 @@ _BOLD="\e[1m"
 _RESET="\e[0m"
 
 # Global Variables
-_ConfigFile="$HOME/.script_configs/.chkProjects.config"
-_Projects=$(cat $_ConfigFile)
-_NoDirectories=true
-for line in $_Projects
+_CONFIG_FILE="$HOME/.script_configs/.chkProjects.config"
+_PROJECTS=$(cat $_CONFIG_FILE)
+_NO_DIRECTORIES=true
+for line in $_PROJECTS
 do
 	GITBASED=.git
 	echo -e "${_WHITE}${_BOLD}Checked Folder:${_RESET} $line"
@@ -45,9 +45,9 @@ do
 				echo -e "${directories##*/}:$msg${_RESET}"
 				cd ..
 			fi
-			[ $_NoDirectories = true ] && _NoDirectories=false
+			[ $_NO_DIRECTORIES = true ] && _NO_DIRECTORIES=false
 		fi
 	done
-	[ $_NoDirectories = true ] && echo -e "${_WHITE}${_BOLD}INFO:${_RESET}${_BLUE} No Directories Found ${_RESET}" || _NoDirectories=true
+	[ $_NO_DIRECTORIES = true ] && echo -e "${_WHITE}${_BOLD}INFO:${_RESET}${_BLUE} No Directories Found ${_RESET}" || _NO_DIRECTORIES=true
 	echo ""
 done

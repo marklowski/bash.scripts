@@ -1,32 +1,84 @@
 #!/bin/bash
-#Try to Push Commits to Raspi
-ConfigFile="$HOME/.script_configs/.pushChanges.raspi"
-Projects=$(awk '!a[$0]++' $ConfigFile)
+# Try to Push Commits to Raspi
 
-clear
-echo "...cycling through config file "
-echo ""
-counter=0
+# ASCII Coloring
+_YELLOW="\e[0;33m"
+_CYAN="\e[0;36m"
+_WHITE="\e[0;37m"
+_BOLD="\e[1m"
+_RESET="\e[0m"
 
-for line in $Projects
-do
-	if [ $counter -gt 3 ]; then
-		echo "Delay of 30 Seconds because Pi not available"
-		counter=0
-		sleep 30
-	fi
+# Global Variables
+_CONFIG_FILE="$HOME/.script_configs/.pushChanges.raspi"
+_PROJECTS=$(awk '!a[$0]++' $_CONFIG_FILE)
 
-	GITBASED=.git
-	if [[ -d $line ]]; then
-		cd $line
-		echo $PWD
-		if [[ -d "$GITBASED" ]]; then
-			git push pi
-			counter=$[$counter +1]
-		fi
-	fi
+pushProjects () {
+	counter
+	clear
+
+	echo -e "${_WHITE}${_BOLD}Cycling through config file ${_RESET}"
 	echo ""
-done
 
-echo "...now clearing config file"
-> $ConfigFile
+	for line in $_PROJECTS
+	do
+		if [ $counter -gt 3 ]; then
+			echo -e "${_YELLOW}${_BOLD}Delay of 30 Seconds because Pi not available${_RESET} \n"
+			counter=0
+			sleep 30
+		fi
+
+		GITBASED=.git
+		if [[ -d $line ]]; then
+			cd $line
+			echo -e "${_CYAN}${_BOLD}  Checking Directory: ${_RESET} ${PWD##*/}"
+			if [[ -d "$GITBASED" ]]; then
+				git push pi
+				counter=$[$counter +1]
+			fi
+		fi
+		echo ""
+	done
+}
+
+clearConfig () {
+	echo -e "${_WHITE}${_BOLD}Now clearing config file${_RESET}"
+	> $_CONFIG_FILE
+}
+
+listConfig () {
+	echo -e "${_CYAN}${_BOLD}Found the Following Projects:${_RESET}"
+	for line in $_PROJECTS
+	do
+		echo -e "${_WHITE} $line ${_RESET}"
+	done
+	echo ""
+}
+
+while getopts ":hcle" opt; do
+case ${opt} in
+		h )
+			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
+			echo -e "${_WHITE}${_BOLD}-h: ${_RESET} List commited Repositories without Pushing"
+			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Help File without Pushing"
+			echo -e "${_WHITE}${_BOLD}-e: ${_RESET} Execute Program\n"
+			exit 1
+			;;
+		c )
+			clearConfig
+			exit 1
+			;;
+		l )
+			listConfig
+			exit 1
+			;;
+		e )
+			pushProjects
+			exit 1
+			;;
+		\? )
+			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG" 1>&2
+			exit 1
+			;;
+	esac
+done
+shift $((OPTIND -1))
