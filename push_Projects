@@ -57,22 +57,19 @@ while getopts ":hcle" opt; do
 case ${opt} in
 		h )
 			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-			echo -e "${_WHITE}${_BOLD}-h: ${_RESET} List commited Repositories without Pushing"
+			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List commited Repositories without Pushing"
 			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Help File without Pushing"
 			echo -e "${_WHITE}${_BOLD}-e: ${_RESET} Execute Program\n"
 			exit 1
 			;;
 		c )
 			clearConfig
-			exit 1
 			;;
 		l )
 			listConfig
-			exit 1
 			;;
 		e )
 			pushProjects
-			exit 1
 			;;
 		\? )
 			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG" 1>&2
