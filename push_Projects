@@ -11,6 +11,9 @@ _RESET="\e[0m"
 # Global Variables
 _CONFIG_FILE="$HOME/.script_configs/.pushChanges.raspi"
 _PROJECTS=$(awk '!a[$0]++' $_CONFIG_FILE)
+_REMOTE_IP="192.168.178.202"
+_REMOTE_FILE_WORK="~/changedProject.workLaptop.txt"
+_REMOTE_FILE_HOME="~/changedProject.homeDesktop.txt"
 
 pushProjects () {
 	counter=1
@@ -41,7 +44,14 @@ pushProjects () {
 
 clearConfig () {
 	echo -e "${_WHITE}${_BOLD}Now clearing config file${_RESET}"
-	> $_CONFIG_FILE
+	echo -n "" > $_CONFIG_FILE
+}
+
+clearConfigRemote () {
+	[[ $remote_opt = 'W' ]] && remote_file=$_REMOTE_FILE_WORK || remote_file=$_REMOTE_FILE_HOME
+
+	echo -e "${_WHITE}${_BOLD}Now clearing Remote file${_RESET} $remote_file"
+	test=$(ssh git@$_REMOTE_IP "echo -n "" > $remote_file")
 }
 
 listConfig () {
@@ -53,12 +63,21 @@ listConfig () {
 	echo ""
 }
 
-while getopts ":hcle" opt; do
+listConfigRemote() {
+	[[ $remote_opt = 'W' ]] && remote_file=$_REMOTE_FILE_WORK || remote_file=$_REMOTE_FILE_HOME
+
+	remote_projects=$(ssh git@$_REMOTE_IP "cat $remote_file")
+	echo $remote_projects
+}
+
+while getopts ":hcler:C:" opt; do
 case ${opt} in
 		h )
 			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
 			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List commited Repositories without Pushing"
+			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List pushed Repositories (Work=W, Home=H)"
 			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Help File without Pushing"
+			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Remote Help File (Work=W, Home=H)"
 			echo -e "${_WHITE}${_BOLD}-e: ${_RESET} Execute Program\n"
 			exit 1
 			;;
@@ -71,10 +90,22 @@ case ${opt} in
 		e )
 			pushProjects
 			;;
+		r )
+			remote_opt=$OPTARG
+			listConfigRemote
+			;;
+		C )
+			remote_opt=$OPTARG
+			clearConfigRemote
+			;;
 		\? )
 			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG" 1>&2
 			exit 1
 			;;
+		: )
+            echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} -$OPTARG requires an argument \n" 1>&2
+            exit 1
+            ;;
 	esac
 done
 shift $((OPTIND -1))
