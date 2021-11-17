@@ -69,7 +69,7 @@ listConfigRemote() {
 	ssh git@$_REMOTE_IP "cat $remote_file"
 }
 
-while getopts ":hcler:C:" opt; do
+while getopts ":hcle:r:C:" opt; do
 case ${opt} in
 		h )
 			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
@@ -88,6 +88,8 @@ case ${opt} in
 			;;
 		e )
 			pushProjects
+			remote_opt=$OPTARG
+			clearConfigRemote
 			;;
 		r )
 			remote_opt=$OPTARG
