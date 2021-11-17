@@ -55,8 +55,8 @@ Git_Push() {
 Git_Commit() {
 
     ( [ -d "$_PRP_FOLDER" ] ) && cd $_PRP_FOLDER &&
-    [[ $1 == "H" ]] && PRP_Commit="${CurrentDate}: From HomeOffice" ||
-    PRP_Commit="${CurrentDate}: From Office"
+    [[ $1 == "H" ]] && PRP_Commit="${_CURRENT_DATE}: From HomeOffice" ||
+    PRP_Commit="${_CURRENT_DATE}: From Office"
     git add . &&
     git commit -m "$PRP_Commit"
 }

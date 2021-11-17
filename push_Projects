@@ -66,18 +66,17 @@ listConfig () {
 listConfigRemote() {
 	[[ $remote_opt = 'W' ]] && remote_file=$_REMOTE_FILE_WORK || remote_file=$_REMOTE_FILE_HOME
 
-	remote_projects=$(ssh git@$_REMOTE_IP "cat $remote_file")
-	echo $remote_projects
+	ssh git@$_REMOTE_IP "cat $remote_file"
 }
 
 while getopts ":hcler:C:" opt; do
 case ${opt} in
 		h )
 			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List commited Repositories without Pushing"
-			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List pushed Repositories (Work=W, Home=H)"
-			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Help File without Pushing"
-			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Remote Help File (Work=W, Home=H)"
+			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List Local Changes"
+			echo -e "${_WHITE}${_BOLD}-r: ${_RESET} List Remote Changes(Work=W, Home=H)"
+			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Local File"
+			echo -e "${_WHITE}${_BOLD}-C: ${_RESET} Clear Remote File (Work=W, Home=H)"
 			echo -e "${_WHITE}${_BOLD}-e: ${_RESET} Execute Program\n"
 			exit 1
 			;;
