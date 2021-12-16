@@ -9,7 +9,7 @@ _BOLD="\e[1m"
 _RESET="\e[0m"
 
 # Global Variables
-_CONFIG_FILE="$HOME/.script_configs/.pushChanges.raspi"
+_CONFIG_FILE="$HOME/.config/script-settings/pushChangesRaspi.cfg"
 _PROJECTS=$(awk '!a[$0]++' $_CONFIG_FILE)
 _REMOTE_IP="192.168.178.202"
 _REMOTE_FILE_WORK="~/changedProject.workLaptop.txt"

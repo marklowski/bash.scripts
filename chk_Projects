@@ -12,9 +12,16 @@ _BOLD="\e[1m"
 _RESET="\e[0m"
 
 # Global Variables
-_CONFIG_FILE="$HOME/.script_configs/.chkProjects.config"
+_CONFIG_FILE="$HOME/.config/script-settings/chkProjects.cfg"
 _PROJECTS=$(cat $_CONFIG_FILE)
 _NO_DIRECTORIES=true
+
+# Initialize Program
+
+_ORIGIN=$(pwd) # Get Origin Directory 
+cd # GoTo Root Directory
+clear # Clear Screen
+
 for line in $_PROJECTS
 do
 	GITBASED=.git
@@ -51,3 +58,5 @@ do
 	[ $_NO_DIRECTORIES = true ] && echo -e "${_WHITE}${_BOLD}INFO:${_RESET}${_BLUE} No Directories Found ${_RESET}" || _NO_DIRECTORIES=true
 	echo ""
 done
+
+cd $_ORIGIN # Move Origin Directory 

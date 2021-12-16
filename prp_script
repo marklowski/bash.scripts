@@ -11,9 +11,9 @@ _WHITE="\e[0;37m"
 _BOLD="\e[1m"
 _RESET="\e[0m"
 
-_CONFIG_FILE="$HOME/.script_configs/.prpScript.config"
-_REMINDER_FOLDER="$HOME/.script_configs"
-_REMINDER_FILE="$HOME/.script_configs/.reminder.txt"
+_CONFIG_FILE="$HOME/.config/script-settings/prpScript.cfg"
+_REMINDER_FOLDER="$HOME/.config/script-settings"
+_REMINDER_FILE="$HOME/.config/script-settings/reminder.cfg"
 _PRP_FOLDER=$(cat $_CONFIG_FILE)
 _CURRENT_DATE=`date +"%Y-%m-%d"`
 
