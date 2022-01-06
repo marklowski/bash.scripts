@@ -33,7 +33,7 @@ create_Github_Repository() {
 
 create_Git_Remote() {
 	# Call Repo Create Script on Raspberry Pi
-	ssh git@192.168.178.202 "git-new-repo $_REPOSITORY"
+	ssh -i ~/.ssh/raspi git@192.168.178.202 -t ". /etc/profile; . ~/.profile; git-new-repo $_REPOSITORY"
 }
 
 

@@ -2,14 +2,16 @@
 # remove old Git-Remote 
 # add new Git-Remote
 
+_GIT_SUFFIX='.git'
+_DIRECTORY_PREFIX="~/repositories/"
+_CURRENT_REPOSITORY=${PWD##*/}
+_DIRECTORY_PATH="$_DIRECTORY_PREFIX$_CURRENT_REPOSITORY$_GIT_SUFFIX"
 clear
-
-repo=${PWD##*/}
 
 printf 'Current Repository: %s\n' "${PWD##*/}"
 
 git remote remove pi
 
-git remote add pi git@192.168.178.202:/mnt/git/$repo.git
+git remote add pi git@RaspberryPi:$_DIRECTORY_PATH
 
 git remote -v
