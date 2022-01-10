@@ -11,6 +11,9 @@ _WHITE="\e[0;37m"
 _BOLD="\e[1m"
 _RESET="\e[0m"
 
+# Source SSH Settings
+source ~/.config/script-settings/sshData.cfg
+
 # Global Variables
 _OPTION=""
 _REPOSITORY=""
@@ -21,7 +24,7 @@ create_Git_Repository() {
 	cd ./$_REPOSITORY
 	if [ ! -d ".git" ]; then
 	  git init
-	  git remote add pi git@192.168.178.202:/mnt/git/$_REPOSITORY.git
+	  git remote add pi git@$_RASPI_SSH:$_RASPI_PATH$_REPOSITORY.git
 	fi
 }
 
@@ -33,7 +36,7 @@ create_Github_Repository() {
 
 create_Git_Remote() {
 	# Call Repo Create Script on Raspberry Pi
-	ssh -i ~/.ssh/raspi git@192.168.178.202 -t ". /etc/profile; . ~/.profile; git-new-repo $_REPOSITORY"
+	ssh git@$_RASPI_SSH -t ". /etc/profile; . ~/.profile; git-new-repo $_REPOSITORY"
 }
 
 

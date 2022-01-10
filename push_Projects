@@ -8,10 +8,12 @@ _WHITE="\e[0;37m"
 _BOLD="\e[1m"
 _RESET="\e[0m"
 
+# Source SSH Settings
+source ~/.config/script-settings/sshData.cfg
+
 # Global Variables
 _CONFIG_FILE="$HOME/.config/script-settings/pushChangesRaspi.cfg"
 _PROJECTS=$(awk '!a[$0]++' $_CONFIG_FILE)
-_REMOTE_IP="192.168.178.202"
 _REMOTE_FILE_WORK="~/changedProject.workLaptop.txt"
 _REMOTE_FILE_HOME="~/changedProject.homeDesktop.txt"
 
@@ -51,7 +53,7 @@ clearConfigRemote () {
 	[[ $remote_opt = 'W' ]] && remote_file=$_REMOTE_FILE_WORK || remote_file=$_REMOTE_FILE_HOME
 
 	echo -e "${_WHITE}${_BOLD}Now clearing Remote file${_RESET} $remote_file"
-	test=$(ssh git@$_REMOTE_IP "echo -n "" > $remote_file")
+	test=$(ssh git@$_RASPI_SSH "echo -n "" > $remote_file")
 }
 
 listConfig () {
@@ -66,7 +68,7 @@ listConfig () {
 listConfigRemote() {
 	[[ $remote_opt = 'W' ]] && remote_file=$_REMOTE_FILE_WORK || remote_file=$_REMOTE_FILE_HOME
 
-	ssh git@$_REMOTE_IP "cat $remote_file"
+	ssh git@$_RASPI_SSH "cat $remote_file"
 }
 
 while getopts ":hcle:r:C:" opt; do
