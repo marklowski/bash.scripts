@@ -8,7 +8,7 @@
 
 ### chk_Projects
 
-- return to directory where script was launched
+-
 
 ### chk_commit
 

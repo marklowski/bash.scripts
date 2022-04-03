@@ -84,14 +84,12 @@ while getopts ":hlcga:s:" opt; do
 			Git_Pull
 			;;
 		a )
-			add_arg="$OPTARG"
-			Add_Reminder "$add_arg"
+			Add_Reminder "$OPTARG"
 			shift
 			;;
 		s )
-			set_arg="$OPTART"
-			Git_Commit "$set_arg"
-			Git_Push
+		    Git_Commit "$OPTARG"
+		    Git_Push
 			shift
 			;;
 		\? )
