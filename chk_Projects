@@ -1,37 +1,62 @@
 #!/bin/bash
 # Check for Commits
-ConfigFile="$HOME/.script_configs/.chkProjects.config"
-Projects=$(cat $ConfigFile)
-for Line in $Projects
+
+# ASCII Coloring
+_RED="\e[0;31m"
+_CYAN="\e[0;36m"
+_YELLOW="\e[0;33m"
+_BLUE="\e[0;34m"
+_PURPLE="\e[0;35m"
+_WHITE="\e[0;37m"
+_BOLD="\e[1m"
+_RESET="\e[0m"
+
+# Global Variables
+_CONFIG_FILE="$HOME/.config/script-settings/chkProjects.cfg"
+_PROJECTS=$(cat $_CONFIG_FILE)
+_NO_DIRECTORIES=true
+
+# Initialize Program
+
+_ORIGIN=$(pwd) # Get Origin Directory 
+cd # GoTo Root Directory
+clear # Clear Screen
+
+for line in $_PROJECTS
 do
 	GITBASED=.git
+	echo -e "${_WHITE}${_BOLD}Checked Folder:${_RESET} $line"
+
 	# Loop all sub-directories
-	for f in $Line*
+	for directories in $line*
 	do
-		if [[ -d $f ]]; then
-			cd $f
-			MSG_LOCAL="";
+		if [[ -d $directories ]]; then
+			cd $directories
+			msg="";
 
 			if [ -d "$GITBASED" ]; then
-				TEST=$(git status);
+				test=$(git status);
 				# Check Local Repository for changes
-				if [[ $TEST == *"nothing to commit"* ]]; then
-					MSG_LOCAL=": No Changes "
+				if [[ $test == *"nothing to commit"* ]]; then
+					msg="${_CYAN} No Changes "
 					# Check if git status has unstaged changes
-				elif [[ $TEST == *"Changes not staged for commit"* ]]; then
-					MSG_LOCAL=": Unstaged changes "
+				elif [[ $test == *"Changes not staged for commit"* ]]; then
+					msg="${_YELLOW} Unstaged changes "
 					# Check if git status has uncommitted changes
-				elif [[ $TEST == *"Untracked files"* ]]; then
-					MSG_LOCAL=": You forgot to commit some files "
-				elif [[ $TEST == *"Changes to be committed"* ]]; then
-					MSG_LOCAL=": Staged Changes but not Commited "
+				elif [[ $test == *"Untracked files"* ]]; then
+					msg="${_RED} You forgot to commit some files "
+				elif [[ $test == *"Changes to be committed"* ]]; then
+					msg="${_PURPLE} Staged Changes but not Commited "
 				fi
 
-				echo ${f##*/}$MSG_LOCAL
+				echo -e "${directories##*/}:$msg${_RESET}"
 				cd ..
-			else
-				MSG_LOCAL=": Not a valid git project"
 			fi
+			[ $_NO_DIRECTORIES = true ] && _NO_DIRECTORIES=false
 		fi
 	done
+	[ $_NO_DIRECTORIES = true ] && echo -e "${_WHITE}${_BOLD}INFO:${_RESET}${_BLUE} No Directories Found ${_RESET}" || _NO_DIRECTORIES=true
+	echo ""
 done
+
+cd $_ORIGIN # Move Origin Directory 
