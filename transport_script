@@ -132,9 +132,9 @@ while getopts ":hg:ad" opt; do
             exit 1
             ;;
 		g )
-            _TRANSPORT_NUMBER=$OPTARG
-            getTransportPath
-			;;
+            transportNumbers+=("$OPTARG");;
+           # _TRANSPORT_NUMBER=$OPTARG
+           # getTransportPath
 		a )
 			echo -e "${_YELLOW}${_BOLD}Option is not Implemented${_RESET} \n" 1>&2
 			;;
@@ -151,3 +151,10 @@ while getopts ":hg:ad" opt; do
 	esac
 done
 shift $((OPTIND -1))
+
+for transportNumber in "${transportNumbers[@]}"; do
+    _TRANSPORT_NUMBER=$transportNumber
+    getTransportPath
+    echo ""
+done
+
