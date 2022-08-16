@@ -16,6 +16,7 @@ _CONFIG_FILE_PATH="$HOME/.config/script-settings/transportScriptPath.cfg"
 
 _TRANSPORT_NUMBER="DRPK902330"
 _TRANSPORT_SHORTCUT="" # possible values "K" or "R"
+_SKIP_ROW=""
 
 _ARRAY_ROWS=3
 _ARRAY_COLUMNS=0
@@ -64,13 +65,15 @@ returnResults() {
 
     #loop through prp entrys
     for (( counter=1; counter <= $_ARRAY_ROWS; counter++)) do
+        if [[ $counter -eq $_SKIP_ROW ]]; then continue; fi
         echo "  "${pathArray[$counter,$_PRP_ENTRY]}$formattedTransport
     done
 
     echo ""
     echo -e "${_YELLOW} Target System: ${_BOLD}$option${_RESET}"
 
-    for (( counter=1; counter <= $_ARRAY_ROWS; counter++)) do
+    for (( counter=$_ARRAY_ROWS; counter >= 1; counter--)) do
+        if [[ $counter -eq $_SKIP_ROW ]]; then continue; fi
         echo "  "${pathArray[$counter,$_SELECTED_ENTRY]}$formattedTransport
     done
 }
@@ -108,11 +111,13 @@ getTransportPath() {
     done
 
     _TRANSPORT_SHORTCUT="K"
+    _SKIP_ROW=2
     returnResults
 
     echo ""
 
     _TRANSPORT_SHORTCUT="R"
+    _SKIP_ROW=1
     returnResults
 
 }
