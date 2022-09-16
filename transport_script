@@ -16,14 +16,14 @@ _CONFIG_FILE_PATH="$HOME/.config/script-settings/transportScriptPath.cfg"
 
 _TRANSPORT_NUMBER="DRPK902330"
 _TRANSPORT_SHORTCUT="" # possible values "K" or "R"
-_SKIP_ROW=""
 
 _ARRAY_ROWS=3
 _ARRAY_COLUMNS=0
 
 _PRP_ENTRY=1
 _SELECTED_ENTRY=0
-
+_OUTPUT_ENTRY=0
+_REVERSE_OUTPUT='False'
 
 # Read User Configurable Options & add exit option
 mapfile -t optionsArray < $_CONFIG_FILE_OPTIONS
@@ -52,6 +52,26 @@ for item in "${pathArrayComplete[@]}"; do
 done
 
 returnResults() {
+    # set cofiles options
+    _TRANSPORT_SHORTCUT="K"
+
+    # output cofiles header
+    echo -e "${_CYAN} Transports:  ${_BOLD}$_TRANSPORT_SHORTCUT ${_RESET}"
+
+    # output paths's
+    returnResult
+
+    # set data options
+    _TRANSPORT_SHORTCUT="R"
+
+    # output data header
+    echo -e "${_CYAN} Transports:  ${_BOLD}$_TRANSPORT_SHORTCUT ${_RESET}"
+
+    # output paths's
+    returnResult
+}
+
+returnResult() {
     # split imported TA Number
     sapSystem=${_TRANSPORT_NUMBER::3}
     transportNumber=${_TRANSPORT_NUMBER:4:6}
@@ -59,23 +79,28 @@ returnResults() {
     # build corresponding TA Strings
     formattedTransport=$_TRANSPORT_SHORTCUT$transportNumber"."$sapSystem
 
+    if [ $_TRANSPORT_SHORTCUT == "R" ]; then
+      skipRow=1
+    elif [ $_TRANSPORT_SHORTCUT == "K" ]; then
+      skipRow=2
+    else
+      skipRow=9999
+    fi
+
+    #loop through prp entrys in corresponding order
+    if [ $_REVERSE_OUTPUT == "True" ]; then
+      for (( counter=$_ARRAY_ROWS; counter >= 1; counter--)) do
+          if [[ $counter -eq $skipRow ]]; then continue; fi
+          echo "  "${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
+      done
+    else
+      for (( counter=1; counter <= $_ARRAY_ROWS; counter++)) do
+          if [[ $counter -eq $skipRow ]]; then continue; fi
+          echo "  "${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
+      done
+    fi
+
     echo -e ""
-    echo -e "${_CYAN}Transports:  ${_BOLD}$_TRANSPORT_SHORTCUT ${_RESET}"
-    echo -e "${_YELLOW} Local System: ${_BOLD}PRP${_RESET}"
-
-    #loop through prp entrys
-    for (( counter=1; counter <= $_ARRAY_ROWS; counter++)) do
-        if [[ $counter -eq $_SKIP_ROW ]]; then continue; fi
-        echo "  "${pathArray[$counter,$_PRP_ENTRY]}$formattedTransport
-    done
-
-    echo ""
-    echo -e "${_YELLOW} Target System: ${_BOLD}$option${_RESET}"
-
-    for (( counter=$_ARRAY_ROWS; counter >= 1; counter--)) do
-        if [[ $counter -eq $_SKIP_ROW ]]; then continue; fi
-        echo "  "${pathArray[$counter,$_SELECTED_ENTRY]}$formattedTransport
-    done
 }
 
 pathArrayDebug() {
@@ -87,7 +112,7 @@ pathArrayDebug() {
     for ((i=1;i<=num_rows;i++)) do
         printf "$f2" $i
     done
-    
+
     echo
     for ((j=1;j<=$_ARRAY_COLUMNS;j++)) do
         printf "$f1" $j
@@ -110,14 +135,19 @@ getTransportPath() {
         done
     done
 
-    _TRANSPORT_SHORTCUT="K"
-    _SKIP_ROW=2
+    echo ""
+    echo -e "${_BLUE}Displaying Transport Paths for ${_BOLD}$_TRANSPORT_NUMBER${_RESET}"
+    
+    echo -e ""
+    echo -e "${_YELLOW}Local System: ${_BOLD}PRP${_RESET}"
+    _OUTPUT_ENTRY=$_PRP_ENTRY
+    _REVERSE_OUTPUT="false"
     returnResults
 
     echo ""
-
-    _TRANSPORT_SHORTCUT="R"
-    _SKIP_ROW=1
+    echo -e "${_YELLOW}Target System: ${_BOLD}$option${_RESET}"
+    _OUTPUT_ENTRY=$_SELECTED_ENTRY
+    _REVERSE_OUTPUT="True"
     returnResults
 
 }
@@ -133,8 +163,6 @@ while getopts ":hg:ad" opt; do
             ;;
 		g )
             transportNumbers+=("$OPTARG");;
-           # _TRANSPORT_NUMBER=$OPTARG
-           # getTransportPath
 		a )
 			echo -e "${_YELLOW}${_BOLD}Option is not Implemented${_RESET} \n" 1>&2
 			;;
