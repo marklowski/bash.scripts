@@ -42,8 +42,8 @@ checkProjects() {
 			cd $directories
 
 			if [[ -d "$NODEBASED" || -f "$FILEBASED" ]]; then
-				npm audit
-				npm outdated
+				pnpm audit
+				pnpm outdated
 			fi
 			echo ""
 		fi
