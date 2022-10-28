@@ -18,10 +18,16 @@ _INIT_DATE=`date +%d.%m.%Y`
 _INIT_TIME=`date +%H:%M:%S`
 
 # User Inputs
-_SELECTED_ITEM=""
+_SELECTED_ITEM_TEXT=""
+_SELECTED_ITEM_INDEX=""
 _TA_DATE=""
 _TA_TIME=""
 _TA_DESCRIPTION=""
+
+# Global Variables
+declare -a _DIRECTORIES
+declare -a _TRANSPORTS
+declare -a _FILES
 
 getTargetDirectory() {
     PS3="Archive Ordner wählen: "
@@ -30,7 +36,8 @@ getTargetDirectory() {
     select option in "${directoryTargets[@]}"; do
         for item in "${directoryTargets[@]}"; do
             if [[ $item == $option ]]; then
-                _SELECTED_ITEM=$item
+                _SELECTED_ITEM_TEXT=$item
+                _SELECTED_ITEM_INDEX=$REPLY
                 break 2
             fi
         done
@@ -70,14 +77,14 @@ getArchiveDirectory() {
     for entry in "$_TA_FOLDER"/*
     do
         if [ -d "$entry" ]; then
-            directoryOptions[$directoryCounter]=$entry
+            _DIRECTORIES[$directoryCounter]=$entry
             directoryOptionsShortend[$directoryCounter]=${entry##*/}
 
             directoryCounter=$(($directoryCounter+1))
         fi
 
         if [ -f "$entry" ]; then
-            fileOptions[$fileCounter]=$entry
+            _FILES[$fileCounter]=$entry
             fileCounter=$(($fileCounter+1))
         fi
     done
