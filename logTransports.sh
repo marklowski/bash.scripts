@@ -11,10 +11,17 @@ _WHITE="\e[0;37m"
 _BOLD="\e[1m"
 _RESET="\e[0m"
 
+# Script Settings
 _CONFIG_FILE="$HOME/.config/script-settings/logTransports.cfg"
 _TA_FOLDER=$(cat $_CONFIG_FILE)
+_INIT_DATE=`date +%d.%m.%Y`
+_INIT_TIME=`date +%H:%M:%S`
 
+# User Inputs
 _SELECTED_ITEM=""
+_TA_DATE=""
+_TA_TIME=""
+_TA_DESCRIPTION=""
 
 getTargetDirectory() {
     PS3="Archive Ordner wählen: "
@@ -30,6 +37,24 @@ getTargetDirectory() {
     done
 
     return $REPLY
+}
+
+setDocumentation() {
+    read -e -p "Enter custom Date (otherwise: $_INIT_DATE): " taDate
+    if [[ $taDate != "" ]]; then
+        _TA_DATE=$taDate
+    else
+        _TA_DATE=$_INIT_DATE
+    fi
+
+    read -e -p "Enter custom Time (otherwise: $_INIT_TIME): " taTime
+    if [[ $taDate != "" ]]; then
+        _TA_TIME=$taTime
+    else
+        _TA_TIME=$_TA_TIME
+    fi
+
+    read -e -p "Enter Description: " _TA_DESCRIPTION
 }
 
 handleLogging() {
@@ -48,10 +73,6 @@ getArchiveDirectory() {
             directoryOptions[$directoryCounter]=$entry
             directoryOptionsShortend[$directoryCounter]=${entry##*/}
 
-            echo ${directoryOptions[$directoryCounter]}
-            echo ${directoryOptionsShortend[$directoryCounter]}
-            echo $directoryCounter
-
             directoryCounter=$(($directoryCounter+1))
         fi
 
@@ -63,6 +84,8 @@ getArchiveDirectory() {
     
    getTargetDirectory ${directoryOptionsShortend[@]}
    rvTargetDirectory=$?
+
+   setDocumentation ${fileOptions}
 
    handleLogging $fileOptions
 }
