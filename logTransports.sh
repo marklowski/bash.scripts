@@ -29,7 +29,7 @@ declare -a _DIRECTORIES
 declare -a _TRANSPORTS
 declare -a _FILES
 
-getTargetDirectory() {
+dialogGetTargetDirectory() {
     PS3="Archive Ordner wählen: "
     directoryTargets=($@)
 
@@ -43,10 +43,10 @@ getTargetDirectory() {
         done
     done
 
-    return $REPLY
+    echo ""
 }
 
-setDocumentation() {
+dialogSetHeaderInformation() {
     read -e -p "Enter custom Date (otherwise: $_INIT_DATE): " taDate
     if [[ $taDate != "" ]]; then
         _TA_DATE=$taDate
@@ -62,12 +62,27 @@ setDocumentation() {
     fi
 
     read -e -p "Enter Description: " _TA_DESCRIPTION
+
+    echo ""
 }
 
-handleLogging() {
-    
-    fileOptions=$1
+dialogSetTransportInformation() {
+    transportCounter=0
 
+    for entry in "${_FILES[@]}"
+    do
+        entryShortend=${entry##*/}
+        transportShortcut=${entryShortend::1}
+        transportNumber=${entryShortend:1:6}
+        sapSystem=${entryShortend:8:10}
+
+        if [ $transportShortcut == "K" ]; then
+            _TRANSPORTS[$transportCounter]=$sapSystem$transportShortcut$transportNumber
+            transportCounter=$(($transportCounter+1))
+        fi
+    done
+
+    echo ""
 }
 
 getArchiveDirectory() {
@@ -89,16 +104,23 @@ getArchiveDirectory() {
         fi
     done
     
-   getTargetDirectory ${directoryOptionsShortend[@]}
-   rvTargetDirectory=$?
+   dialogGetTargetDirectory ${directoryOptionsShortend[@]}
+}
 
-   setDocumentation ${fileOptions}
+writeLog() {
 
-   handleLogging $fileOptions
+    fileOptions=$1
+
 }
 
 main() {
     getArchiveDirectory
+
+    dialogSetHeaderInformation
+
+    dialogSetTransportInformation
+
+    writeLog $fileOptions
 }
 
 while getopts ":he" opt; do
