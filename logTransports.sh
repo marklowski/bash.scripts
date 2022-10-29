@@ -18,23 +18,26 @@ _INIT_DATE=`date +%d.%m.%Y`
 _INIT_TIME=`date +%H:%M:%S`
 
 # User Inputs
+_EXECUTION_MODE=""
 _SELECTED_ITEM_TEXT=""
 _SELECTED_ITEM_INDEX=""
 _TA_DATE=""
 _TA_TIME=""
 _TA_DESCRIPTION=""
+_README_FILE=""
 
 # Global Variables
 declare -a _DIRECTORIES
+declare -a _DIRECTORIES_SHORTEND
 declare -a _TRANSPORTS
+declare -a _TRANSPORTS_DESCRIPTION
 declare -a _FILES
 
 dialogGetTargetDirectory() {
     PS3="Archive Ordner wählen: "
-    directoryTargets=($@)
 
-    select option in "${directoryTargets[@]}"; do
-        for item in "${directoryTargets[@]}"; do
+    select option in "${_DIRECTORIES_SHORTEND[@]}"; do
+        for item in "${_DIRECTORIES_SHORTEND[@]}"; do
             if [[ $item == $option ]]; then
                 _SELECTED_ITEM_TEXT=$item
                 _SELECTED_ITEM_INDEX=$REPLY
@@ -46,19 +49,38 @@ dialogGetTargetDirectory() {
     echo ""
 }
 
+getArchiveDirectory() {
+    directoryCounter=1
+    fileCounter=1
+
+    for entry in "$_TA_FOLDER"/*; do
+        if [ -d "$entry" ]; then
+            _DIRECTORIES[$directoryCounter]=$entry
+            _DIRECTORIES_SHORTEND[$directoryCounter]=${entry##*/}
+
+            directoryCounter=$(($directoryCounter+1))
+        fi
+
+        if [ -f "$entry" ]; then
+            _FILES[$fileCounter]=$entry
+            fileCounter=$(($fileCounter+1))
+        fi
+    done
+}
+
 dialogSetHeaderInformation() {
-    read -e -p "Enter custom Date (otherwise: $_INIT_DATE): " taDate
+    read -e -p "Enter custom Date (default: $_INIT_DATE): " taDate
     if [[ $taDate != "" ]]; then
         _TA_DATE=$taDate
     else
         _TA_DATE=$_INIT_DATE
     fi
 
-    read -e -p "Enter custom Time (otherwise: $_INIT_TIME): " taTime
+    read -e -p "Enter custom Time (default: $_INIT_TIME): " taTime
     if [[ $taDate != "" ]]; then
         _TA_TIME=$taTime
     else
-        _TA_TIME=$_TA_TIME
+        _TA_TIME=$_INIT_TIME
     fi
 
     read -e -p "Enter Description: " _TA_DESCRIPTION
@@ -66,11 +88,10 @@ dialogSetHeaderInformation() {
     echo ""
 }
 
-dialogSetTransportInformation() {
-    transportCounter=0
+convertFilesToTransports() {
+    transportCounter=1
 
-    for entry in "${_FILES[@]}"
-    do
+    for entry in "${_FILES[@]}"; do
         entryShortend=${entry##*/}
         transportShortcut=${entryShortend::1}
         transportNumber=${entryShortend:1:6}
@@ -81,52 +102,184 @@ dialogSetTransportInformation() {
             transportCounter=$(($transportCounter+1))
         fi
     done
+}
 
+dialogSetTransportInformation() {
+    transportCounter=1
+
+    for entry in "${_TRANSPORTS[@]}"; do
+        read -e -p "Enter Description($entry): " _TRANSPORTS_DESCRIPTION[$transportCounter]
+        transportCounter=$(($transportCounter+1))
+    done
     echo ""
 }
 
-getArchiveDirectory() {
-    directoryCounter=0
-    fileCounter=0
+checkREADME() {
+    _README_FILE="${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/README.md"
+    if [ ! -e "$_README_FILE" ]; then
+        touch $_README_FILE
+        echo "# Changelog / Grouping Information" > $_README_FILE
+    fi
+}
 
-    for entry in "$_TA_FOLDER"/*
-    do
-        if [ -d "$entry" ]; then
-            _DIRECTORIES[$directoryCounter]=$entry
-            directoryOptionsShortend[$directoryCounter]=${entry##*/}
+writeHeader() {
+    exectuionMode="$1"
 
-            directoryCounter=$(($directoryCounter+1))
-        fi
+    if [ "$exectuionMode" == "PREVIEW" ]; then
+        echo ""
+        echo "## ${_TA_DATE} - ${_TA_TIME}"
+        echo ""
+        echo "${_TA_DESCRIPTION}"
+    else
+        echo "" >> $_README_FILE
+        echo "## ${_TA_DATE} - ${_TA_TIME}" >> $_README_FILE
+        echo "" >> $_README_FILE
+        echo "${_TA_DESCRIPTION}" >> $_README_FILE
+    fi
+}
 
-        if [ -f "$entry" ]; then
-            _FILES[$fileCounter]=$entry
-            fileCounter=$(($fileCounter+1))
-        fi
-    done
-    
-   dialogGetTargetDirectory ${directoryOptionsShortend[@]}
+writeTransports() {
+    exectuionMode="$1"
+
+    if [ "$exectuionMode" == "PREVIEW" ]; then
+        echo ""
+        echo "**Corresponding Transports:**"
+        echo ""
+
+        for i in ${!_TRANSPORTS[@]}; do
+            echo "- ${_TRANSPORTS[$i]} - ${_TRANSPORTS_DESCRIPTION[$i]}"
+        done
+    else
+        echo "" >> $_README_FILE
+        echo "**Corresponding Transports:**" >> $_README_FILE
+        echo "" >> $_README_FILE
+
+        for i in ${!_TRANSPORTS[@]}; do
+            echo "- ${_TRANSPORTS[$i]} - ${_TRANSPORTS_DESCRIPTION[$i]}" >> $_README_FILE
+        done
+    fi
 }
 
 writeLog() {
+    exectuionMode="$1"
+    checkREADME
 
-    fileOptions=$1
+    if [ "$exectuionMode" == "PREVIEW" ]; then
+		echo -e "${_CYAN}${_BOLD}Log Preview: ${_RESET}"
+        echo ""
+        echo "---"
+    fi
 
+    writeHeader "$exectuionMode"
+    writeTransports "$exectuionMode"
+
+    if [ "$exectuionMode" == "PREVIEW" ]; then
+        echo ""
+        echo "---"
+        echo ""
+    fi
+}
+
+moveFiles() {
+    for entry in "${_FILES[@]}"; do
+        mv "$entry" "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"
+    done
+}
+
+dialogWriteLog() {
+    writeLog "PREVIEW"
+
+    while true
+    do
+        read -e -p "Write Log to README.md [Y/n]: " input
+        echo ""
+
+        case $input in
+            [yY][eE][sS]|[yY])
+                writeLog
+                moveFiles
+
+                if [ "$_EXECUTION_MODE" != "SILENT" ]; then
+	                echo -e "${_YELLOW}${_BOLD}Finished Script ${_RESET}"
+                fi
+                break
+                ;;
+            [nN][oO]|[nN])
+                if [ "$_EXECUTION_MODE" != "SILENT" ]; then
+			        echo -e "${_BLUE}${_BOLD}Aborting Script ${_RESET}"
+                fi
+                break
+                ;;
+            *)
+			    echo -e "${_RED}${_BOLD}Invalid input... ${_RESET}"
+                echo ""
+                ;;
+        esac
+    done
+}
+
+checkFiles() {
+    getArchiveDirectory
+
+    if [ "$_EXECUTION_MODE" == "EXTERNAL" ]; then
+        if [ ${#_FILES[@]} == 0 ]; then
+            exit 1 # Initial
+        else
+            exit 0 # Not Initial
+        fi
+    else
+        if [ ${#_FILES[@]} == 0 ]; then
+            return 1 # Initial
+        else
+            return 0 # Not Initial
+        fi
+    fi
 }
 
 main() {
+    checkFiles
+    returnValue=$?
+
+    if [ $returnValue != 0 ]; then
+        echo ""
+        echo -e "${_BLUE}${_BOLD}Aborting Script. ${_RESET}"
+        echo -e "${_RED}${_BOLD}No Files were found!${_RESET}"
+        return 1
+    fi
+
     getArchiveDirectory
+
+    dialogGetTargetDirectory
 
     dialogSetHeaderInformation
 
+    convertFilesToTransports
+
     dialogSetTransportInformation
 
-    writeLog $fileOptions
+    dialogWriteLog
 }
 
-while getopts ":he" opt; do
+# -h : is used for help menu
+# -e : default script execution
+# -c : Sub-Script Functionality(SSF), Check if undocumented Files exist
+# -s : SSF, Silent default Script execution
+#
+while getopts ":hecs" opt; do
 	case ${opt} in
-        h  ) echo "Listing Help:"; echo "-e: execute program (expects Parameter: (APT, DNF, ZYPPER, PACMAN))"; exit 1;;
-        e  )
+        h )
+            echo "Listing Help:";
+            echo "-e: execute program";
+            exit 1;;
+        e )
+            main
+			;;
+        c )
+            _EXECUTION_MODE="EXTERNAL"
+            checkFiles
+            ;;
+        s )
+            _EXECUTION_MODE="SILENT"
             main
 			;;
 		\? ) echo "Unknown Option: -$OPTARG" >&2; exit 1;;
