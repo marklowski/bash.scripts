@@ -152,6 +152,35 @@ getTransportPath() {
 
 }
 
+checkAndDocumentTransports() {
+    logTransports.sh -c
+    returnValue=$?
+
+    if [ $returnValue == 0 ]; then
+        echo ""
+        while true
+        do
+            read -e -p "Document Previous Transport [Y/n]: " input
+            echo ""
+
+            case $input in
+                [yY][eE][sS]|[yY])
+                    logTransports.sh -s
+                    echo -e "${_YELLOW}${_BOLD}Finished Sub-Script ${_RESET} \n" 1>&2
+                    break
+                    ;;
+                [nN][oO]|[nN])
+                    echo -e "${_BLUE}${_BOLD}Continuing without Sub-Script ${_RESET} \n" 1>&2
+                    break
+                    ;;
+                *)
+                    echo -e "${_RED}${_BOLD}Invalid input... ${_RESET} \n" 1>&2
+                    ;;
+            esac
+        done
+    fi
+}
+
 while getopts ":hg:ad" opt; do
 	case ${opt} in
 		h )
@@ -162,6 +191,8 @@ while getopts ":hg:ad" opt; do
             exit 1
             ;;
 		g )
+            checkAndDocumentTransports
+
             transportNumbers+=("$OPTARG");;
 		a )
 			echo -e "${_YELLOW}${_BOLD}Option is not Implemented${_RESET} \n" 1>&2
