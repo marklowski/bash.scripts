@@ -1,15 +1,8 @@
 #!/bin/bash
 #PRP WorkScript
 
-# ASCII Coloring
-_RED="\e[0;31m"
-_CYAN="\e[0;36m"
-_YELLOW="\e[0;33m"
-_BLUE="\e[0;34m"
-_PURPLE="\e[0;35m"
-_WHITE="\e[0;37m"
-_BOLD="\e[1m"
-_RESET="\e[0m"
+# Color Include
+source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
 
 _CONFIG_FILE="$HOME/.config/script-settings/prpScript.cfg"
 _REMINDER_FOLDER="$HOME/.config/script-settings"
@@ -64,14 +57,14 @@ Git_Commit() {
 while getopts ":hlcga:s:" opt; do
 	case ${opt} in
 		h )
- 			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-            echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List Reminders"
-			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Clear Reminders"
-			echo -e "${_WHITE}${_BOLD}-a: ${_RESET} Add Reminder"
-			echo -e "${_WHITE}${_BOLD}-g: ${_RESET} Pull PRP-Folder Changes"
-            echo -e "${_WHITE}${_BOLD}-s: ${_RESET} Commit Changes to PRP-Folder"
-            echo -e "	Options 'H' = ${_BOLD}Home Office${_RESET}"
-			echo -e "	Options 'O' = ${_BOLD}Office${_RESET}"
+            echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
+            echo -e "${_FG_WHITE}${_TX_BOLD}-l: ${_TX_RESET} List Reminders"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-c: ${_TX_RESET} Clear Reminders"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-a: ${_TX_RESET} Add Reminder"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-g: ${_TX_RESET} Pull PRP-Folder Changes"
+            echo -e "${_FG_WHITE}${_TX_BOLD}-s: ${_TX_RESET} Commit Changes to PRP-Folder"
+            echo -e "	Options 'H' = ${_TX_BOLD}Home Office${_TX_RESET}"
+			echo -e "	Options 'O' = ${_TX_BOLD}Office${_TX_RESET}"
             exit 1
             ;;
 		l )
@@ -92,15 +85,8 @@ while getopts ":hlcga:s:" opt; do
 		    Git_Push
 			shift
 			;;
-		\? )
-			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG \n" 1>&2
-			exit 1
-			;;
-
-		: )
-			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} -$OPTARG requires an argument \n" 1>&2
-            exit 1
-            ;;
+		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 shift $((OPTIND -1))
