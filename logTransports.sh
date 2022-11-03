@@ -1,15 +1,8 @@
 #!/bin/bash
 # log Transports
 
-# ASCII Coloring
-_RED="\e[0;31m"
-_CYAN="\e[0;36m"
-_YELLOW="\e[0;33m"
-_BLUE="\e[0;34m"
-_PURPLE="\e[0;35m"
-_WHITE="\e[0;37m"
-_BOLD="\e[1m"
-_RESET="\e[0m"
+# Color Include
+source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
 
 # Script Settings
 _CONFIG_FILE="$HOME/.config/script-settings/logTransports.cfg"
@@ -165,7 +158,7 @@ writeLog() {
     checkREADME
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
-		echo -e "${_CYAN}${_BOLD}Log Preview: ${_RESET}"
+		echo -e "${_FG_CYAN}${_TX_BOLD}Log Preview: ${_TX_RESET}"
         echo ""
         echo "---"
     fi
@@ -200,18 +193,18 @@ dialogWriteLog() {
                 moveFiles
 
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-	                echo -e "${_YELLOW}${_BOLD}Finished Script ${_RESET}"
+	                echo -e "${_FG_YELLOW}${_TX_BOLD}Finished Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             [nN][oO]|[nN])
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-			        echo -e "${_BLUE}${_BOLD}Aborting Script ${_RESET}"
+			        echo -e "${_FG_BLUE}${_TX_BOLD}Aborting Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             *)
-			    echo -e "${_RED}${_BOLD}Invalid input... ${_RESET}"
+			    echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET}"
                 echo ""
                 ;;
         esac
@@ -242,8 +235,8 @@ main() {
 
     if [ $returnValue != 0 ]; then
         echo ""
-        echo -e "${_BLUE}${_BOLD}Aborting Script. ${_RESET}"
-        echo -e "${_RED}${_BOLD}No Files were found!${_RESET}"
+        echo -e "${_FG_BLUE}${_TX_BOLD}Aborting Script. ${_TX_RESET}"
+        echo -e "${_FG_RED}${_TX_BOLD}No Files were found!${_TX_RESET}"
         return 1
     fi
 
@@ -268,8 +261,8 @@ main() {
 while getopts ":hecs" opt; do
 	case ${opt} in
         h )
-            echo "Listing Help:";
-            echo "-e: execute program";
+			echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-e: ${_TX_RESET} Execute Program"
             exit 1;;
         e )
             main
