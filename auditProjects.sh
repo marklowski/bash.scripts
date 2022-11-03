@@ -1,18 +1,14 @@
 #!/bin/bash
-# Try to Push Commits to Raspi
+# Audit PNPM Packages of multiple Projects
 
-# ASCII Coloring
-_YELLOW="\e[0;33m"
-_CYAN="\e[0;36m"
-_WHITE="\e[0;37m"
-_BOLD="\e[1m"
-_RESET="\e[0m"
+# Color Include
+source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
 
 # Global Variables
 _PROJECTS="$(pwd)/"
 
 listProjects() {
-	echo -e "${_WHITE}${_BOLD}Checked Folder:${_RESET} $_PROJECTS"
+	echo -e "${_FG_WHITE}${_TX_BOLD}Checked Folder:${_TX_RESET} $_PROJECTS"
 	
 	for directories in $_PROJECTS*
 	do
@@ -30,11 +26,11 @@ listProjects() {
 }
 
 checkProjects() {
-	echo -e "${_WHITE}${_BOLD}Checked Folder:${_RESET} $_PROJECTS"
+	echo -e "${_FG_WHITE}${_TX_BOLD}Checked Folder:${_TX_RESET} $_PROJECTS"
 	
 	for directories in $_PROJECTS*
 	do
-		echo -e "${_WHITE}${_BOLD}Checked Project:${_RESET} ${directories##*/}"
+		echo -e "${_FG_WHITE}${_TX_BOLD}Checked Project:${_TX_RESET} ${directories##*/}"
 		NODEBASED=node_modules
 		FILEBASED=package.json
 
@@ -55,12 +51,12 @@ checkProjects() {
 while getopts ":hlcDiu" opt; do
 case ${opt} in
 		h )
-			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-			echo -e "${_WHITE}${_BOLD}-l: ${_RESET} List would be Checked Projects"
-			echo -e "${_WHITE}${_BOLD}-c: ${_RESET} Check for Vulnerabilities && Updates"
-			echo -e "${_WHITE}${_BOLD}-D: ${_RESET} Delete node_modules Folder && package-lock-json"
-            echo -e "${_WHITE}${_BOLD}-i: ${_RESET} Install NPM Packages"
-            echo -e "${_WHITE}${_BOLD}-u: ${_RESET} Upgrade All NPM Packages\n"
+			echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-l: ${_TX_RESET} List would be Checked Projects"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-c: ${_TX_RESET} Check for Vulnerabilities && Updates"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-D: ${_TX_RESET} Delete node_modules Folder && package-lock-json"
+            echo -e "${_FG_WHITE}${_TX_BOLD}-i: ${_TX_RESET} Install NPM Packages"
+            echo -e "${_FG_WHITE}${_TX_BOLD}-u: ${_TX_RESET} Upgrade All NPM Packages\n"
 			exit 1
 			;;
 		c )
@@ -76,7 +72,7 @@ case ${opt} in
 			exit 1
 			;;
 		\? )
-			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG" 1>&2
+			echo -e "${_FG_YELLOW}${_TX_BOLD}Invalid Option: ${_TX_RESET} $OPTARG" 1>&2
 			exit 1
 			;;
 	esac
