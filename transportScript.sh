@@ -1,14 +1,8 @@
 #!/bin/bash
+# Build Transport Script Path
 
-# ASCII Coloring
-_RED="\e[0;31m"
-_CYAN="\e[0;36m"
-_YELLOW="\e[0;33m"
-_BLUE="\e[0;34m"
-_PURPLE="\e[0;35m"
-_WHITE="\e[0;37m"
-_BOLD="\e[1m"
-_RESET="\e[0m"
+# Color Include
+source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
 
 # Global Variables
 _CONFIG_FILE_OPTIONS="$HOME/.config/script-settings/transportScriptOptions.cfg"
@@ -56,7 +50,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="K"
 
     # output cofiles header
-    echo -e "${_CYAN} Transports:  ${_BOLD}$_TRANSPORT_SHORTCUT ${_RESET}"
+    echo -e "${_FG_CYAN} Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -65,7 +59,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="R"
 
     # output data header
-    echo -e "${_CYAN} Transports:  ${_BOLD}$_TRANSPORT_SHORTCUT ${_RESET}"
+    echo -e "${_FG_CYAN} Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -136,16 +130,16 @@ getTransportPath() {
     done
 
     echo ""
-    echo -e "${_BLUE}Displaying Transport Paths for ${_BOLD}$_TRANSPORT_NUMBER${_RESET}"
+    echo -e "${_FG_BLUE}Displaying Transport Paths for ${_TX_BOLD}$_TRANSPORT_NUMBER${_TX_RESET}"
     
     echo -e ""
-    echo -e "${_YELLOW}Local System: ${_BOLD}PRP${_RESET}"
+    echo -e "${_FG_YELLOW}Local System: ${_TX_BOLD}PRP${_TX_RESET}"
     _OUTPUT_ENTRY=$_PRP_ENTRY
     _REVERSE_OUTPUT="false"
     returnResults
 
     echo ""
-    echo -e "${_YELLOW}Target System: ${_BOLD}$option${_RESET}"
+    echo -e "${_FG_YELLOW}Target System: ${_TX_BOLD}$option${_TX_RESET}"
     _OUTPUT_ENTRY=$_SELECTED_ENTRY
     _REVERSE_OUTPUT="True"
     returnResults
@@ -166,15 +160,15 @@ checkAndDocumentTransports() {
             case $input in
                 [yY][eE][sS]|[yY])
                     logTransports.sh -s
-                    echo -e "${_YELLOW}${_BOLD}Finished Sub-Script ${_RESET} \n" 1>&2
+                    echo -e "${_FG_YELLOW}${_TX_BOLD}Finished Sub-Script ${_TX_RESET} \n" 1>&2
                     break
                     ;;
                 [nN][oO]|[nN])
-                    echo -e "${_BLUE}${_BOLD}Continuing without Sub-Script ${_RESET} \n" 1>&2
+                    echo -e "${_FG_BLUE}${_TX_BOLD}Continuing without Sub-Script ${_TX_RESET} \n" 1>&2
                     break
                     ;;
                 *)
-                    echo -e "${_RED}${_BOLD}Invalid input... ${_RESET} \n" 1>&2
+                    echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET} \n" 1>&2
                     ;;
             esac
         done
@@ -184,10 +178,10 @@ checkAndDocumentTransports() {
 while getopts ":hg:ad" opt; do
 	case ${opt} in
 		h )
-			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-			echo -e " ${_WHITE}${_BOLD}-g: ${_RESET} get Transport Paths"
-			echo -e " ${_WHITE}${_BOLD}-a: ${_RESET} add new Transport Path"
-			echo -e " ${_WHITE}${_BOLD}-d: ${_RESET} delete a Transport Path"
+			echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
+			echo -e " ${_FG_WHITE}${_TX_BOLD}-g: ${_TX_RESET} get Transport Paths"
+			echo -e " ${_FG_WHITE}${_TX_BOLD}-a: ${_TX_RESET} add new Transport Path"
+			echo -e " ${_FG_WHITE}${_TX_BOLD}-d: ${_TX_RESET} delete a Transport Path"
             exit 1
             ;;
 		g )
@@ -195,18 +189,13 @@ while getopts ":hg:ad" opt; do
 
             transportNumbers+=("$OPTARG");;
 		a )
-			echo -e "${_YELLOW}${_BOLD}Option is not Implemented${_RESET} \n" 1>&2
+			echo -e "${_FG_YELLOW}${_TX_BOLD}Option is not Implemented${_TX_RESET} \n" 1>&2
 			;;
 		d )
-			echo -e "${_YELLOW}${_BOLD}Option is not Implemented${_RESET} \n" 1>&2
+			echo -e "${_FG_YELLOW}${_TX_BOLD}Option is not Implemented${_TX_RESET} \n" 1>&2
 			;;
-		\? )
-			echo -e "${_RED}${_BOLD}Invalid Option: ${_RESET} $OPTARG \n" 1>&2
-			exit 1
-			;;
-		: )
-			echo -e "${_RED}${_BOLD}Invalid: Option -$OPTARG${_RESET} requires an argument \n" 1>&2
-			exit 1
+		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 shift $((OPTIND -1))
