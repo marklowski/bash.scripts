@@ -2,15 +2,8 @@
 # remove old Git-Remote 
 # add new Git-Remote
 
-# ASCII Coloring
-_RED="\e[0;31m"
-_CYAN="\e[0;36m"
-_YELLOW="\e[0;33m"
-_BLUE="\e[0;34m"
-_PURPLE="\e[0;35m"
-_WHITE="\e[0;37m"
-_BOLD="\e[1m"
-_RESET="\e[0m"
+# Color Include
+source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
 
 # Source SSH Settings
 source ~/.config/script-settings/sshData.cfg
@@ -51,10 +44,10 @@ changeRemote() {
 while getopts ":hbgr" opt; do
 	case ${opt} in
 		h )
-			echo -e "${_CYAN}${_BOLD}Listing Help: ${_RESET}"
-            echo -e "${_WHITE}${_BOLD}-b: ${_RESET} Update Bitbucket Remote"
-			echo -e "${_WHITE}${_BOLD}-g: ${_RESET} Update Github Remote"
-			echo -e "${_WHITE}${_BOLD}-r: ${_RESET} Update Raspberry Remote"
+			echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
+            echo -e "${_FG_WHITE}${_TX_BOLD}-b: ${_TX_RESET} Update Bitbucket Remote"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-g: ${_TX_RESET} Update Github Remote"
+			echo -e "${_FG_WHITE}${_TX_BOLD}-r: ${_TX_RESET} Update Raspberry Remote"
             exit 1
             ;;
 		b )
@@ -72,10 +65,7 @@ while getopts ":hbgr" opt; do
             _REMOTE_SSH=$_RASPI_SSH
 			changeRemote
 			;;
-		\? )
-			echo -e "${_YELLOW}${_BOLD}Invalid Option: ${_RESET} $OPTARG \n" 1>&2
-			exit 1
-			;;
+		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 shift $((OPTIND -1))
