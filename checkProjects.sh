@@ -2,7 +2,7 @@
 # Check Git Projects
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Global Variables
 _CONFIG_FILE="$HOME/.config/script-settings/chkProjects.cfg"

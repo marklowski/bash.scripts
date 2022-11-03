@@ -2,7 +2,7 @@
 # Audit PNPM Packages of multiple Projects
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Global Variables
 _PROJECTS="$(pwd)/"
@@ -71,10 +71,15 @@ case ${opt} in
 			# pushProjects
 			exit 1
 			;;
-		\? )
-			echo -e "${_FG_YELLOW}${_TX_BOLD}Invalid Option: ${_TX_RESET} $OPTARG" 1>&2
-			exit 1
-			;;
+		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
+
+if ((OPTIND == 1))
+then
+echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
+fi
+
 shift $((OPTIND -1))

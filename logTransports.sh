@@ -2,7 +2,7 @@
 # log Transports
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Script Settings
 _CONFIG_FILE="$HOME/.config/script-settings/logTransports.cfg"
@@ -275,15 +275,15 @@ while getopts ":hecs" opt; do
             _EXECUTION_MODE="SILENT"
             main
 			;;
-		\? ) echo "Unknown Option: -$OPTARG" >&2; exit 1;;
-		:  ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
-        *  ) echo "Unimplemented option: -$opt"
+		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     esac
 done
 
 if ((OPTIND == 1))
 then
-    echo "No options specified"
+echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
 fi
 
 shift $((OPTIND - 1))

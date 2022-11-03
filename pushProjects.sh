@@ -2,7 +2,7 @@
 # Try to Push Commits to Raspi
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Source SSH Settings
 source ~/.config/script-settings/sshData.cfg
@@ -99,6 +99,13 @@ case ${opt} in
 			;;
 		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
+
+if ((OPTIND == 1))
+then
+echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
+fi
+
 shift $((OPTIND -1))

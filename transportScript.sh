@@ -2,7 +2,7 @@
 # Build Transport Script Path
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Global Variables
 _CONFIG_FILE_OPTIONS="$HOME/.config/script-settings/transportScriptOptions.cfg"
@@ -196,8 +196,15 @@ while getopts ":hg:ad" opt; do
 			;;
 		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
+
+if ((OPTIND == 1))
+then
+echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
+fi
+
 shift $((OPTIND -1))
 
 for transportNumber in "${transportNumbers[@]}"; do

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Color Include
-source ~/extSSD/p/projects/bash.scripts/incl.Colors.sh
+source $BASH_COLOR_INCL
 
 # Source SSH Settings
 source ~/.config/script-settings/sshData.cfg
