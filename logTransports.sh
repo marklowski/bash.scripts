@@ -120,9 +120,9 @@ writeHeader() {
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
         echo ""
-        echo "## ${_TA_DATE} - ${_TA_TIME}"
+        echo -e "${_FG_YELLOW}## ${_TA_DATE} - ${_TA_TIME} ${_TX_RESET}"
         echo ""
-        echo "${_TA_DESCRIPTION}"
+        echo -e "${_FG_WHITE}${_TA_DESCRIPTION}${_TX_RESET}"
     else
         echo "" >> $_README_FILE
         echo "## ${_TA_DATE} - ${_TA_TIME}" >> $_README_FILE
@@ -136,7 +136,7 @@ writeTransports() {
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
         echo ""
-        echo "**Corresponding Transports:**"
+        echo -e "${_FG_YELLOW}**Corresponding Transports:**${_TX_RESET}"
         echo ""
 
         for i in ${!_TRANSPORTS[@]}; do
@@ -158,9 +158,9 @@ writeLog() {
     checkREADME
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
-		echo -e "${_FG_CYAN}${_TX_BOLD}Log Preview: ${_TX_RESET}"
+		echo -e "${_FG_BLUE}Log Preview: ${_TX_RESET}"
         echo ""
-        echo "---"
+        echo -e "${_FG_BLUE}---${_TX_RESET}"
     fi
 
     writeHeader "$exectuionMode"
@@ -168,7 +168,7 @@ writeLog() {
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
         echo ""
-        echo "---"
+        echo -e "${_FG_BLUE}---${_TX_RESET}"
         echo ""
     fi
 }
@@ -193,18 +193,18 @@ dialogWriteLog() {
                 moveFiles
 
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-	                echo -e "${_FG_YELLOW}${_TX_BOLD}Finished Script ${_TX_RESET}"
+	                echo -e "${_FG_YELLOW}Finished Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             [nN][oO]|[nN])
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-			        echo -e "${_FG_BLUE}${_TX_BOLD}Aborting Script ${_TX_RESET}"
+			        echo -e "${_FG_BLUE}Aborting Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             *)
-			    echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET}"
+			    echo -e "${_FG_RED}Invalid input... ${_TX_RESET}"
                 echo ""
                 ;;
         esac
