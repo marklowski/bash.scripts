@@ -101,7 +101,7 @@ dialogSetTransportInformation() {
     transportCounter=1
 
     for entry in "${_TRANSPORTS[@]}"; do
-        read -e -p "Enter Description($entry): " _TRANSPORTS_DESCRIPTION[$transportCounter]
+        read -e -p "Enter Description ($entry): " _TRANSPORTS_DESCRIPTION[$transportCounter]
         transportCounter=$(($transportCounter+1))
     done
     echo ""
