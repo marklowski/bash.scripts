@@ -50,7 +50,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="K"
 
     # output cofiles header
-    echo -e "${_FG_CYAN} Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
+    echo -e "${_FG_CYAN}Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -59,7 +59,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="R"
 
     # output data header
-    echo -e "${_FG_CYAN} Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
+    echo -e "${_FG_CYAN}Transports:  ${_TX_BOLD}$_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -85,12 +85,12 @@ returnResult() {
     if [ $_REVERSE_OUTPUT == "True" ]; then
       for (( counter=$_ARRAY_ROWS; counter >= 1; counter--)) do
           if [[ $counter -eq $skipRow ]]; then continue; fi
-          echo "  "${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
+          echo ${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
       done
     else
       for (( counter=1; counter <= $_ARRAY_ROWS; counter++)) do
           if [[ $counter -eq $skipRow ]]; then continue; fi
-          echo "  "${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
+          echo ${pathArray[$counter,$_OUTPUT_ENTRY]}$formattedTransport
       done
     fi
 
