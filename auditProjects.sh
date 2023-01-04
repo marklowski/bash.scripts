@@ -1,6 +1,9 @@
 #!/bin/bash
 # Audit PNPM Packages of multiple Projects
 
+# Clear Screen
+clear
+
 # Color Include
 source $BASH_COLOR_INCL
 
