@@ -2,35 +2,43 @@
 
 ## New Features
 
-### audit_projects
+### auditProjects
 
 -
 
-### chk_Projects
+### checkProjects
 
 -
 
-### chk_commit
+### checkCommit
 
 -
 
-### create_Project
+### createProject
 
 - additional flag to copy hooks & activate them
 
-### git-add-remote
+### gitAddRemote
 
 -
 
-### git-new-repo
+### gitNewRepository
 
 -
 
-### prp_script
+### prpScript
+
+- reminder.cfg change to .local/share file
+
+### pushProjects
+
+- pushProjects.cfg change to .local/share file
+
+### logTransports
 
 -
 
-### push_Projects
+### transportScript
 
 -
 
