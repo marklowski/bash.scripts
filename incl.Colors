@@ -30,3 +30,9 @@ _TX_REVERSE=$(tput rev)    # reverse
 _TX_STANDOUT=$(tput smso)   # standout
 _TX_ENDSTAND=$(tput rmso)   # exit standout
 _TX_RESET=$(tput sgr0)   # reset attributes
+
+_SPACE_2="  "
+_SPACE_4="    "
+_SPACE_6="      "
+_SPACE_8="        "
+_SPACE_10="          "
