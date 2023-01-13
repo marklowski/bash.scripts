@@ -16,7 +16,7 @@
 
 ### createProject
 
-- additional flag to copy hooks & activate them
+-
 
 ### gitAddRemote
 
