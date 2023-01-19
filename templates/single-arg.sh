@@ -36,7 +36,7 @@ while getopts ":hl:" opt; do
 		l )
 			testMethod "$OPTARG"
 			;;
-		h  ) printHelp >&2; exit 1;;
+		h  ) printHelp exit 1;;
 		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 		*  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
