@@ -17,8 +17,8 @@ source $BASH_COLOR_INCL
 #
 
 printHelp() {
-  echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
-	echo -e " ${_FG_WHITE}${_TX_BOLD}-g: ${_TX_RESET} get Transport Paths"
+  echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
+	echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} get Transport Paths"
 }
 
 while getopts ":hg:" opt; do
@@ -26,16 +26,16 @@ while getopts ":hg:" opt; do
 		g )
       transportNumbers+=("$OPTARG");;
 		h  ) printHelp >&2; exit 1;;
-		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 
 # Standard Behaviour when, no option was supplied.
 if ((OPTIND == 1))
 then
-echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
+echo -e "${_FG_RED}Error: No Option specified ${_TX_RESET}" >&2;
 fi
 
 shift $((OPTIND -1))
