@@ -1,15 +1,22 @@
 #!/bin/bash
 # loop through git projects and check for different options
 
-# Color Include
+#
+# Include's
+#
 source $BASH_COLOR_INCL
 
-# Constants
+#
+# Global Variables
+#
 _GIT_HOOK_DIR=".git/hooks"
-
-# User Inputs
 _GIT_HOOK=""
 
+#
+# try to get path to standard hook,
+# otherwise use user-input to build
+# the correct path.
+#
 getHookPath() {
   hookPath="$_GIT_HOOK_DIR/post-commit"
 
@@ -20,9 +27,13 @@ getHookPath() {
     _GIT_HOOK="post-commit" # otherwise set default value
   fi
 
+  # used for inline return
   eval "$1='$hookPath'"
 }
 
+#
+# check if the hookPath is plausible.
+#
 checkExistence() {
   hookPath=$1
 
@@ -34,6 +45,9 @@ checkExistence() {
   fi
 } 
 
+#
+# try to print the content of the corresponding hook.
+#
 printHook() {
   # getHookPath && check existence 
   hookPath=""
@@ -47,6 +61,13 @@ printHook() {
   fi
 }
 
+#
+# depending on the executionOption,
+# execute the script differently.
+#
+# - IGNORE_NOT_FOUND -> replace only already existing hook's
+# - INSERT_OR_REPLACE -> replace or paste hook
+#
 replaceHook() {
   # get args
   replacementPath=$1
@@ -73,9 +94,14 @@ replaceHook() {
   fi
 }
 
+#
+# main execution loop, that loop's through
+# the current sub-directories and execute's the
+# corresponding option.
+#
 main() {
-  OPTION=$1
-  ARGUMENT=$2
+  option=$1
+  argument=$2
 
   for line in $PWD/
   do
@@ -84,23 +110,20 @@ main() {
       echo -e "${_FG_YELLOW}${directories##*/}: ${_TX_RESET}"
       cd $directories
 
-      case $OPTION in
-        e )
-          printHook
-          ;;
-        r )
-          replaceHook "$ARGUMENT" "IGNORE_NOT_FOUND"
-          ;;
-        i )
-          replaceHook "$ARGUMENT" "INSERT_OR_REPLACE"
-          ;;
-		    * ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+      case $option in
+        e ) printHook ;;
+        r ) replaceHook "$argument" "IGNORE_NOT_FOUND" ;;
+        i ) replaceHook "$argument" "INSERT_OR_REPLACE" ;;
+        * ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
       esac
       echo ""
     done
   done
 }
 
+#
+# output script description.
+#
 printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
   echo -e "${_SPACE_2}${_FG_WHITE}-f:${_TX_RESET} set relevant commit hook"
@@ -115,33 +138,23 @@ printHelp() {
   echo -e "${_SPACE_2}when other hook should be tested add ${_FG_WHITE}-f${_TX_RESET} before actual option"
 }
 
+#
+# handle script options.
+#
 while getopts ":her:f:i:" opt; do
-case ${opt} in
-		h )
-      printHelp
-			exit 1
-			;;
-		e )
-      main "e"
-			exit 1
-			;;
-    r )
-      main "r" "$OPTARG"
-		 	exit 1
-		 	;;
-    i )
-      main "i" "$OPTARG"
-		 	exit 1
-		 	;;
-    f )
-      _GIT_HOOK="$OPTARG"
-      ;;
-		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+  case ${opt} in
+    h  ) printHelp exit 1 ;;
+    e  ) main "e" exit 1 ;;
+    r  ) main "r" "$OPTARG" exit 1 ;;
+    i  ) main "i" "$OPTARG" exit 1 ;;
+    f  ) _GIT_HOOK="$OPTARG" ;;
+    \? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    :  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    *  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 
+# Standard Behaviour when, no option was supplied.
 if ((OPTIND == 1)); then
   main "e"
 fi
