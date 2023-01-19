@@ -4,7 +4,10 @@
 
 ### auditProjects
 
--
+- implement options
+  - D - delete node_modules && -lock file
+  - i - install pnpm packages
+  - ? u - upgrade npm packages
 
 ### checkProjects
 
