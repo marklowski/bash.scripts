@@ -16,11 +16,17 @@ source $BASH_COLOR_INCL
 # Functions
 #
 
+#
+# output script description.
+#
 printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
 	echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} get Transport Paths"
 }
 
+#
+# handle script options.
+#
 while getopts ":hg:" opt; do
 	case ${opt} in
 		g )

@@ -20,11 +20,17 @@ testMethod () {
   echo $testVariable
 }
 
+#
+# output script description.
+#
 printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
 	echo -e "${_SPACE_2}${_FG_WHITE}-l: ${_TX_RESET} Replace"
 }
 
+#
+# handle script options.
+#
 while getopts ":hl:" opt; do
 	case ${opt} in
 		l )
