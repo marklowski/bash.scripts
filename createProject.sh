@@ -32,33 +32,32 @@ preRepositoryCreation() {
   # print header
 	echo -e "${_FG_CYAN}Creating ${targetSystem} Repository:${_TX_RESET} $_REPOSITORY_NAME\n"
 
-  if [ "$visibilityDialog" == "YES" ]; then
+  if $visibilityDialog; then
     echo "Repository visibility dialog would be shown."
   fi
 }
 
 #
-# handle repository creation.
+# handle the corresponding repository creation.
 #
 handleRepositoryCreation() {
-  # call the corresponding functions
-  if [ "$_CREATE_LOCAL" == "YES" ]; then
-    preRepositoryCreation "local" "NO"
-    #createLocalGitRepository
+  if $_CREATE_LOCAL; then
+    preRepositoryCreation "Local" false
+    createLocalGitRepository
   fi
 
-  if [ "$_CREATE_RASPBERRY_PI" == "YES" ]; then
-    preRepositoryCreation "Raspberry Pi" "NO"
-    # create_Git_Remote
+  if $_CREATE_RASPBERRY_PI; then
+    preRepositoryCreation "Raspberry Pi" false
+    createRaspberryPiRepository
   fi
 
-  if [ "$_CREATE_GITHUB" == "YES" ]; then
-    preRepositoryCreation "Github" "YES"
+  if $_CREATE_GITHUB; then
+    preRepositoryCreation "Github" true
+    createGithubRepository
   fi
 
-  if [ "$_CREATE_GITLAB" == "YES" ]; then
-    echo "Gitlab Repo"
-    preRepositoryCreation "Gitlab" "YES"
+  if $_CREATE_GITLAB; then
+    preRepositoryCreation "Gitlab" true
   fi
 }
 
@@ -80,17 +79,27 @@ createLocalGitRepository() {
 	fi
 }
 
-create_Github_Repository() {
+#
+# create Repository on Raspberry Pi, with the help of a Sub-Script.
+#
+createRaspberryPiRepository() {
+	# Call Repo Create Script on Raspberry Pi
+	ssh $_RASPI_SSH -t ". /etc/profile; . ~/.profile; gitNewRepository $_REPOSITORY_NAME"
+}
+
+createGithubRepository() {
 	# Create GitHub Repo
   projectPath="$(pwd)"
   remoteName="github"
+
   gh repo create $_REPOSITORY_NAME $_OPTION -r $remoteName -s $projectPath
-  # TODO: execute gitAddRemote -g
 }
 
-create_Git_Remote() {
-	# Call Repo Create Script on Raspberry Pi
-	ssh git@$_RASPI_SSH -t ". /etc/profile; . ~/.profile; gitNewRepository $_REPOSITORY_NAME"
+#
+# create Gitlab Repository, with the help of 'glab'.
+#
+createGitlabRepository() {
+  # TODO: Not yet implemented
 }
 
 #
