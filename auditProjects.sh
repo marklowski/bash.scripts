@@ -16,10 +16,6 @@ _PNPM_BASED="pnpm-lock.yaml"
 _NPM_BASED="package-lock.json"
 
 #
-# Functions
-#
-
-#
 # check if Projects are _NODE_BASED, and list them accordingly.
 #
 listProjects() {

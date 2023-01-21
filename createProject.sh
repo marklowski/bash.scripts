@@ -253,8 +253,7 @@ while getopts ":hlrgn:" opt; do
 done
 
 # Standard Behaviour when, no option was supplied.
-if ((OPTIND == 1))
-then
+if ((OPTIND == 1)); then
   echo -e "${_FG_RED}Error:${_TX_RESET} No Option specified" >&2;
   exit 1
 fi

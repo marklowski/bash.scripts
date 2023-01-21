@@ -143,11 +143,11 @@ printHelp() {
 #
 while getopts ":her:f:i:" opt; do
   case ${opt} in
-    h  ) printHelp exit 1 ;;
     e  ) main "e" exit 1 ;;
     r  ) main "r" "$OPTARG" exit 1 ;;
     i  ) main "i" "$OPTARG" exit 1 ;;
     f  ) _GIT_HOOK="$OPTARG" ;;
+    h  ) printHelp exit 1 ;;
     \? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     :  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     *  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
@@ -155,8 +155,5 @@ while getopts ":her:f:i:" opt; do
 done
 
 # Standard Behaviour when, no option was supplied.
-if ((OPTIND == 1)); then
-  main "e"
-fi
-
+if ((OPTIND == 1)); then main "e"; fi
 shift $((OPTIND -1))
