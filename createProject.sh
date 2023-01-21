@@ -38,8 +38,8 @@ chooseVisibility() {
       echo ""
 
       case $input in
-          [p]) $_OPTION="--private"; break ;;
-          [P]) $_OPTION="--public"; break ;;
+          [p]) _OPTION="--private"; break ;;
+          [P]) _OPTION="--public"; break ;;
           *)
             echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET} \n" 1>&2
             echo "Choose between the following options:"
@@ -150,18 +150,21 @@ createGitlabRepository() {
 # check Mandatory Fields, for execution.
 #
 checkMandatory() {
-  # check repository exists localy.
-  if [ ! -d $_REPOSITORY_PATH ]; then
-    echo ""
-    echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository not found, to fix add the following Option" >&2;
-    echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
-    return 1
-  else
-    cd $_REPOSITORY_PATH
-  fi
+  # ignore when create local repository is set
+  if ! $_CREATE_LOCAL; then
+    # check repository exists localy.
+    if [ ! -d $_REPOSITORY_PATH ]; then
+      echo ""
+      echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository not found, to fix add the following Option" >&2;
+      echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
+      return 1
+    else
+      cd $_REPOSITORY_PATH
+    fi
 
-	if [ ! -d "$_C_GITBASED" ]; then
-    echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository is not initialized as a git repository" >&2;
+	  if [ ! -d "$_C_GITBASED" ]; then
+      echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository is not initialized as a git repository" >&2;
+    fi
   fi
 
   # check if a create flag was supplied.
