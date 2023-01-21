@@ -1,11 +1,17 @@
 #!/bin/bash
 # log Transports
 
-# Color Include
+#
+# Include's
+#
+_CONFIG_FILE=$HOME/.config/script-settings/logTransports.cfg
 source $BASH_COLOR_INCL
 
+#
+# Global Variables
+#
+
 # Script Settings
-_CONFIG_FILE="$HOME/.config/script-settings/logTransports.cfg"
 _TA_FOLDER=$(cat $_CONFIG_FILE)
 _INIT_DATE=`date +%d.%m.%Y`
 _INIT_TIME=`date +%H:%M:%S`
@@ -19,13 +25,16 @@ _TA_TIME=""
 _TA_DESCRIPTION=""
 _README_FILE=""
 
-# Global Variables
+# Arrays
 declare -a _DIRECTORIES
 declare -a _DIRECTORIES_SHORTEND
 declare -a _TRANSPORTS
 declare -a _TRANSPORTS_DESCRIPTION
 declare -a _FILES
 
+#
+# decide between available directories.
+#
 dialogGetTargetDirectory() {
     PS3="Archive Ordner wählen: "
 
@@ -42,6 +51,9 @@ dialogGetTargetDirectory() {
     echo ""
 }
 
+#
+# get available directories & collect relevent files.
+#
 getArchiveDirectory() {
     directoryCounter=1
     fileCounter=1
@@ -61,6 +73,9 @@ getArchiveDirectory() {
     done
 }
 
+#
+# set header log information.
+#
 dialogSetHeaderInformation() {
     read -e -p "Enter custom Date (default: $_INIT_DATE): " taDate
     if [[ $taDate != "" ]]; then
@@ -81,6 +96,10 @@ dialogSetHeaderInformation() {
     echo ""
 }
 
+#
+# convert transport files into single transport,
+# for clearer listing.
+#
 convertFilesToTransports() {
     transportCounter=1
 
@@ -97,6 +116,9 @@ convertFilesToTransports() {
     done
 }
 
+#
+# handle description for available transports.
+#
 dialogSetTransportInformation() {
     transportCounter=1
 
@@ -107,6 +129,9 @@ dialogSetTransportInformation() {
     echo ""
 }
 
+#
+# initializes log file.
+#
 checkREADME() {
     _README_FILE="${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/README.md"
     if [ ! -e "$_README_FILE" ]; then
@@ -115,6 +140,9 @@ checkREADME() {
     fi
 }
 
+#
+# decides between writing header to console or log file.
+#
 writeHeader() {
     exectuionMode="$1"
 
@@ -131,6 +159,9 @@ writeHeader() {
     fi
 }
 
+#
+# decides between writing transports to console or log file.
+#
 writeTransports() {
     exectuionMode="$1"
 
@@ -153,6 +184,9 @@ writeTransports() {
     fi
 }
 
+#
+# decides between writing the log to console or log file.
+#
 writeLog() {
     exectuionMode="$1"
     checkREADME
@@ -173,12 +207,18 @@ writeLog() {
     fi
 }
 
+#
+# move files to corresponding directory.
+#
 moveFiles() {
     for entry in "${_FILES[@]}"; do
         mv "$entry" "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"
     done
 }
 
+#
+# after preview, decide between writing to log or not.
+#
 dialogWriteLog() {
     writeLog "PREVIEW"
 
@@ -211,6 +251,9 @@ dialogWriteLog() {
     done
 }
 
+#
+# check if transport files were found.
+#
 checkFiles() {
     getArchiveDirectory
 
@@ -229,6 +272,9 @@ checkFiles() {
     fi
 }
 
+#
+# main execution function.
+#
 main() {
     checkFiles
     returnValue=$?
@@ -253,6 +299,17 @@ main() {
     dialogWriteLog
 }
 
+#
+# output script description.
+#
+printHelp() {
+  echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
+	echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Execute Program"
+}
+
+#
+# handle script options.
+#
 # -h : is used for help menu
 # -e : default script execution
 # -c : Sub-Script Functionality(SSF), Check if undocumented Files exist
@@ -260,30 +317,16 @@ main() {
 #
 while getopts ":hecs" opt; do
 	case ${opt} in
-        h )
-			echo -e "${_FG_CYAN}${_TX_BOLD}Listing Help: ${_TX_RESET}"
-			echo -e "${_FG_WHITE}${_TX_BOLD}-e: ${_TX_RESET} Execute Program"
-            exit 1;;
-        e )
-            main
-			;;
-        c )
-            _EXECUTION_MODE="EXTERNAL"
-            checkFiles
-            ;;
-        s )
-            _EXECUTION_MODE="SILENT"
-            main
-			;;
-		\? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		:  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		*  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    e ) main ;;
+    c ) _EXECUTION_MODE="EXTERNAL"; checkFiles ;;
+    s ) _EXECUTION_MODE="SILENT"; main ;;
+		h  ) printHelp exit 1;;
+		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+		*  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     esac
 done
 
-if ((OPTIND == 1))
-then
-echo -e "${_FG_RED}${_TX_BOLD}Error: No Option specified ${_TX_RESET}" >&2;
-fi
-
+# Standard Behaviour when, no option was supplied.
+if ((OPTIND == 1)); then printHelp; fi
 shift $((OPTIND - 1))
