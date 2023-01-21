@@ -61,7 +61,7 @@ preRepositoryCreation() {
   visibilityDialog=$2
 
   # print header
-	echo -e "${_FG_CYAN}Creating ${targetSystem} Repository:${_TX_RESET} $_REPOSITORY_NAME\n"
+	echo -e "${_FG_CYAN}Creating ${targetSystem} Repository:${_TX_RESET} $_REPOSITORY_NAME"
 
   if $visibilityDialog; then
     chooseVisibility
@@ -87,7 +87,7 @@ handleRepositoryCreation() {
     createGithubRepository
 
     # update git remote path to -> .ssh/config file
-    gitAddRemote -g
+    gitAddRemote.sh -g
   fi
 
   if $_CREATE_GITLAB; then
@@ -95,7 +95,7 @@ handleRepositoryCreation() {
     createGitlabRepository
 
     # update git remote path to -> .ssh/config file
-    #gitAddRemote -g
+    #gitAddRemote.sh -g
   fi
 }
 
@@ -114,6 +114,9 @@ createLocalGitRepository() {
   if [ ! -d "$_C_GITBASED" ]; then
     git init
   fi
+
+  # add new line
+  echo ""
 }
 
 #
@@ -125,6 +128,9 @@ createRaspberryPiRepository() {
 
   # add Raspberry Remote
   git remote add pi git@$_RASPI_SSH:$_RASPI_PATH$_REPOSITORY.git
+
+  # add new line
+  echo ""
 }
 
 #
@@ -136,6 +142,9 @@ createGithubRepository() {
   remoteName="github"
 
   gh repo create $_REPOSITORY_NAME $_OPTION -r $remoteName -s $projectPath
+
+  # add new line
+  echo ""
 }
 
 #
@@ -143,7 +152,9 @@ createGithubRepository() {
 #
 createGitlabRepository() {
   # TODO: Not yet implemented
-  temp=1
+
+  # add new line
+  echo ""
 }
 
 #
