@@ -11,6 +11,7 @@ source $BASH_COLOR_INCL
 #
 # Global Variables
 #
+_C_GITBASED=".git"
 _TARGET_SYSTEM=""
 _OPTION=""
 _REPOSITORY_NAME=""
@@ -23,7 +24,37 @@ _CREATE_GITHUB=false
 _CREATE_GITLAB=false
 
 #
+# choose between the possible Visibility.
+#
+chooseVisibility() {
+  echo "Choose between the following options:"
+  echo -e "${_SPACE_2}p | Private Repository"
+  echo -e "${_SPACE_2}P | Public Repository"
+
+  while true
+  do
+      echo ""
+      read -e -p "Choose between the following [p/P]: " input
+      echo ""
+
+      case $input in
+          [p]) $_OPTION="--private"; break ;;
+          [P]) $_OPTION="--public"; break ;;
+          *)
+            echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET} \n" 1>&2
+            echo "Choose between the following options:"
+            echo -e "${_SPACE_2}p | Private Repository"
+            echo -e "${_SPACE_2}P | Public Repository"
+            ;;
+      esac
+  done
+}
+
+#
 # initialize repository creation.
+#
+# @param $1 - target system
+# @param $2 - display Visibility dialog
 #
 preRepositoryCreation() {
   targetSystem=$1
@@ -33,7 +64,7 @@ preRepositoryCreation() {
 	echo -e "${_FG_CYAN}Creating ${targetSystem} Repository:${_TX_RESET} $_REPOSITORY_NAME\n"
 
   if $visibilityDialog; then
-    echo "Repository visibility dialog would be shown."
+    chooseVisibility
   fi
 }
 
@@ -54,10 +85,17 @@ handleRepositoryCreation() {
   if $_CREATE_GITHUB; then
     preRepositoryCreation "Github" true
     createGithubRepository
+
+    # update git remote path to -> .ssh/config file
+    gitAddRemote -g
   fi
 
   if $_CREATE_GITLAB; then
     preRepositoryCreation "Gitlab" true
+    createGitlabRepository
+
+    # update git remote path to -> .ssh/config file
+    #gitAddRemote -g
   fi
 }
 
@@ -68,15 +106,14 @@ handleRepositoryCreation() {
 # 2. check if git is initialized 
 #
 createLocalGitRepository() {
-  gitBased=".git"
-	# Create Folder when not existent && move into it
-	mkdir -p $_REPOSITORY_PATH
-	cd $_REPOSITORY_PATH
+  # Create Folder when not existent && move into it
+  mkdir -p $_REPOSITORY_PATH
+  cd $_REPOSITORY_PATH
 
   # check if repository is git based
-	if [ ! -d "$gitBased" ]; then
-	  git init
-	fi
+  if [ ! -d "$_C_GITBASED" ]; then
+    git init
+  fi
 }
 
 #
@@ -85,8 +122,14 @@ createLocalGitRepository() {
 createRaspberryPiRepository() {
 	# Call Repo Create Script on Raspberry Pi
 	ssh $_RASPI_SSH -t ". /etc/profile; . ~/.profile; gitNewRepository $_REPOSITORY_NAME"
+
+  # add Raspberry Remote
+  git remote add pi git@$_RASPI_SSH:$_RASPI_PATH$_REPOSITORY.git
 }
 
+#
+# create Github Repository, with the help of 'gh'.
+#
 createGithubRepository() {
 	# Create GitHub Repo
   projectPath="$(pwd)"
@@ -100,6 +143,39 @@ createGithubRepository() {
 #
 createGitlabRepository() {
   # TODO: Not yet implemented
+  temp=1
+}
+
+#
+# check Mandatory Fields, for execution.
+#
+checkMandatory() {
+  # check repository exists localy.
+  if [ ! -d $_REPOSITORY_PATH ]; then
+    echo ""
+    echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository not found, to fix add the following Option" >&2;
+    echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
+    return 1
+  else
+    cd $_REPOSITORY_PATH
+  fi
+
+	if [ ! -d "$_C_GITBASED" ]; then
+    echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository is not initialized as a git repository" >&2;
+  fi
+
+  # check if a create flag was supplied.
+  if ( ! $_CREATE_LOCAL && ! $_CREATE_RASPBERRY_PI && ! $_CREATE_GITHUB && ! $_CREATE_GITLAB ); then
+    echo -e "${_FG_RED}Error:${_TX_RESET} For Project Creation Option one of the following options needs to be supplied:" >&2;
+	  echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
+	  echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_FG_YELLOW}RaspberryPi${_TX_RESET} Repository" >&2;
+	  echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_FG_YELLOW}Github${_TX_RESET} Repository" >&2;
+	  echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_FG_YELLOW}Gitlab${_TX_RESET} Repository" >&2;
+    return 1
+  fi
+
+  # all mandatory requirements were supplied
+  return 0
 }
 
 #
@@ -141,7 +217,20 @@ while getopts ":hlrgn:" opt; do
 		r  ) _REPOSITORY_NAME_SUPPLIED=false; _CREATE_RASPBERRY_PI=true ;;
 		g  ) _REPOSITORY_NAME_SUPPLIED=false; _CREATE_GITHUB=true ;;
 		G  ) _REPOSITORY_NAME_SUPPLIED=false; _CREATE_GITLAB=true ;;
-		n  ) _REPOSITORY_NAME_SUPPLIED=true; handleRepositoryCreation exit 1;;
+		n  )
+      _REPOSITORY_NAME_SUPPLIED=true
+      _REPOSITORY_NAME="$OPTARG"
+      _REPOSITORY_PATH="$(pwd)/$_REPOSITORY_NAME"
+
+      checkMandatory
+      returnValue=$?
+
+      if [ $returnValue == 0 ]; then
+        handleRepositoryCreation
+      fi
+
+      exit 1
+      ;;
 		h  ) printHelp exit 1;;
 		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
@@ -152,7 +241,7 @@ done
 # Standard Behaviour when, no option was supplied.
 if ((OPTIND == 1))
 then
-  echo -e "${_FG_RED}Error: No Option specified ${_TX_RESET}" >&2;
+  echo -e "${_FG_RED}Error:${_TX_RESET} No Option specified" >&2;
   exit 1
 fi
 
@@ -162,16 +251,5 @@ shift $((OPTIND -1))
 if ( $_CREATE_LOCAL || $_CREATE_RASPBERRY_PI || $_CREATE_GITHUB || $_CREATE_GITLAB ); then
   if ! $_REPOSITORY_NAME_SUPPLIED; then
     echo -e "${_FG_RED}Error:${_TX_RESET} For Project Creation Option -n needs to supplied with a ${_FG_BLUE}<Repository Name>  ${_TX_RESET}" >&2;
-  fi
-fi
-
-# check if a repository name was set, that create flag was also supplied
-if $_REPOSITORY_NAME_SUPPLIED; then
-  if ( ! $_CREATE_LOCAL && ! $_CREATE_RASPBERRY_PI && ! $_CREATE_GITHUB && ! $_CREATE_GITLAB ); then
-    echo -e "${_FG_RED}Error:${_TX_RESET} For Project Creation Option one of the following options needs to be supplied:" >&2;
-	  echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
-	  echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_FG_YELLOW}RaspberryPi${_TX_RESET} Repository" >&2;
-	  echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_FG_YELLOW}Github${_TX_RESET} Repository" >&2;
-	  echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_FG_YELLOW}Gitlab${_TX_RESET} Repository" >&2;
   fi
 fi
