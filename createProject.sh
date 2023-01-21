@@ -202,7 +202,7 @@ printHelp() {
 	echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_FG_YELLOW}Github${_TX_RESET} Repository"
 	echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_FG_YELLOW}Gitlab${_TX_RESET} Repository"
 	echo -e "${_SPACE_2}${_FG_WHITE}-n:${_TX_RESET} This Option is ${_FG_RED}mandatory${_TX_RESET} to supply the Repository Name"
-	echo -e "${_SPACE_6}${_FG_YELLOW}-arg:${_TX_RESET} Repository Name"
+	echo -e "${_SPACE_6}${_FG_YELLOW}arg:${_TX_RESET} Repository Name"
   echo ""
   echo -e "${_FG_MAGENTA}Examples: ${_TX_RESET}"
 	echo -e "${_SPACE_2}createProject.sh -lrn ${_FG_BLUE}<Repository Name>${_TX_RESET}"

@@ -94,7 +94,7 @@ printHelp() {
   echo -e "${_SPACE_2}${_FG_WHITE}-l: ${_TX_RESET} List would be Checked Projects"
   echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Check the above Project List for Vulnerabilities && Updates"
   echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Check Single Project for Vulnerabilities && Updates"
-  echo -e "${_SPACE_4}${_FG_YELLOW}-arg:${_TX_RESET} project path"
+  echo -e "${_SPACE_4}${_FG_YELLOW}arg:${_TX_RESET} project path"
   echo ""
   echo -e "${_FG_YELLOW}Not yet Implemented: ${_TX_RESET}"
   echo -e "${_SPACE_2}${_FG_WHITE}-D: ${_TX_RESET} Delete node_modules Folder && package-lock-json"
