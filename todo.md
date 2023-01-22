@@ -2,36 +2,57 @@
 
 ## New Features
 
-### audit_projects
+### auditProjects.sh
 
-- add clear Screen on execution
+- implement options
+  - D - delete node_modules && -lock file
+  - i - install pnpm packages
+  - ? u - upgrade npm packages
 
-### chk_Projects
-
--
-
-### chk_commit
-
--
-
-### create_Project
-
-- additional flag to copy hooks & activate them
-
-### git-add-remote
+### checkCommit.sh
 
 -
 
-### git-new-repo
+### checkGitHooks.sh
 
 -
 
-### prp_script
+### checkProjects.sh
 
 -
 
-### push_Projects
+### createProject.sh
 
 -
+
+### gitAddRemote.sh
+
+-
+
+### gitNewRepository.sh
+
+-
+
+### logTransports.sh
+
+-
+
+### prpScript.sh
+
+- reminder.cfg change to .local/share file
+
+### pushProjects.sh
+
+- pushProjects.cfg change to .local/share file
+
+### raspiRepositorySelector.sh
+
+-
+
+### transportScript
+
+- implement options
+  - a - add transport path
+  - d - delete transport path
 
 ## Ideas
