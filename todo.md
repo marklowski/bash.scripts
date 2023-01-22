@@ -51,6 +51,8 @@
 
 ### transportScript
 
--
+- implement options
+  - a - add transport path
+  - d - delete transport path
 
 ## Ideas
