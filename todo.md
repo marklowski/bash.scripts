@@ -2,42 +2,50 @@
 
 ## New Features
 
-### auditProjects
+### auditProjects.sh
 
 - implement options
   - D - delete node_modules && -lock file
   - i - install pnpm packages
   - ? u - upgrade npm packages
 
-### checkProjects
+### checkCommit.sh
 
 -
 
-### checkCommit
+### checkGitHooks.sh
 
 -
 
-### createProject
+### checkProjects.sh
 
 -
 
-### gitAddRemote
+### createProject.sh
 
 -
 
-### gitNewRepository
+### gitAddRemote.sh
 
 -
 
-### prpScript
+### gitNewRepository.sh
+
+-
+
+### logTransports.sh
+
+-
+
+### prpScript.sh
 
 - reminder.cfg change to .local/share file
 
-### pushProjects
+### pushProjects.sh
 
 - pushProjects.cfg change to .local/share file
 
-### logTransports
+### raspiRepositorySelector.sh
 
 -
 
