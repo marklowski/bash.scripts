@@ -169,6 +169,129 @@ checkAndDocumentTransports() {
     fi
 }
 
+addNewConfig() {
+  identifier="$1"
+  cofilesPath="$2"
+  dataPath="$3"
+  localPath="$4"
+
+  # Add Identifier
+  echo "$identifier" >> $_CONFIG_FILE_OPTIONS
+
+  # Add Path's
+  echo "_${identifier}_COFILES;${cofilesPath};" >> $_CONFIG_FILE_PATH
+  echo "_${identifier}_DATA;${dataPath};"    >> $_CONFIG_FILE_PATH
+  echo "_${identifier}_LOCAL;${localPath};"   >> $_CONFIG_FILE_PATH
+}
+
+confirmConfigInput() {
+  identifier="$1"
+  cofilesPath="$2"
+  dataPath="$3"
+  localPath="$4"
+
+  echo -e "${_FG_WHITE}Identifier:${_TX_RESET} $identifier"
+  echo -e "${_SPACE_2}${_FG_BLUE}cofiles path:${_TX_RESET} $cofilesPath"
+  echo -e "${_SPACE_2}${_FG_BLUE}data path:${_TX_RESET} $dataPath"
+  echo -e "${_SPACE_2}${_FG_BLUE}local path:${_TX_RESET} $localPath"
+
+  echo ""
+  while true; do
+      read -e -p "Are the inputs correct[Y/n/R]: " input
+      echo ""
+
+      case $input in
+          [yY][eE][sS]|[yY])
+            addNewConfig "$identifier" "$cofilesPath" "$dataPath" "$localPath"
+            echo -e "${_FG_GREEN}Success:${_TX_RESET} Config '$identifier' was added.\n" 1>&2
+            break
+            ;;
+          [nN][oO]|[nN])
+            echo -e "${_FG_BLUE}INFO:${_TX_RESET} Aborting Script...\n" 1>&2
+            break
+            ;;
+          [rR][eE][tT][rR][yY]|[rR]) handleConfig;;
+          *)
+            echo -e "${_FG_RED}Invalid input... ${_TX_RESET} \n" 1>&2
+            echo -e "${_FG_WHITE}Y - Yes${_TX_RESET}"
+            echo -e "${_FG_WHITE}N - No${_TX_RESET}"
+            echo -e "${_FG_WHITE}R - Retry${_TX_RESET}"
+            ;;
+      esac
+  done
+}
+
+handleConfig() {
+  checkIdentifier=false
+
+  if [[ ${#optionsArray[@]} != 0 ]]; then
+    echo -e "${_FG_BLUE}INFO:${_TX_RESET} The following Identifier's are already used:"
+    for item in "${optionsArray[@]}"; do
+      echo "- $item"
+    done
+
+    echo ""
+    checkIdentifier=true
+  else
+    echo -e "${_FG_BLUE}INFO:${_TX_RESET} No Identifiers were found"
+  fi
+
+  read -e -p "Enter a unique System Identifier (e.g. '${_FG_YELLOW}sap1${_TX_RESET}'): " identifier
+
+  identifier=${identifier^^}
+
+  if $checkIdentifier; then
+    for item in "${optionsArray[@]}"; do
+      if [[ $item  == $identifier ]]; then
+        echo -e "${_FG_RED}Error:${_TX_RESET} Identifier '$identifier' already used."
+        exit 1
+      fi
+    done
+  fi
+
+  echo -e "${_FG_BLUE}INFO:${_TX_RESET} With the help of TCODE 'AL11', you can find the corresponding path's."
+
+  # adds '/' when not found, at last position.
+  read -e -p "Enter the ${_FG_BLUE}cofiles${_TX_RESET} directory: " cofilesPath
+  [[ "$cofilesPath" != */ ]] && cofilesPath+="/"
+
+  read -e -p "Enter the ${_FG_BLUE}data${_TX_RESET} directory: " dataPath
+  [[ "$dataPath" != */ ]] && dataPath+="/"
+  read -e -p "Enter the ${_FG_BLUE}local${_TX_RESET} directory(default: 'C:/TEMP/TA/'): " localPath
+  [[ "$localPath" != */ ]] && localPath+="/"
+
+  if [[ $localPath == "" || $localPath == "/" ]]; then
+    localPath="C:/TEMP/TA/"
+    echo "$localPath"
+  fi
+
+  confirmConfigInput "$identifier" "$cofilesPath" "$dataPath" "$localPath"
+}
+
+deleteConfig() {
+  identifier=""
+
+  PS3="Config wählen: "
+  select option in "${optionsArray[@]}"; do
+      for item in "${optionsArray[@]}"; do
+          if [[ $item  == $option ]]; then
+              identifier=$item
+              break 2
+          fi
+      done
+  done
+
+  read -e -p "Delete the following Config '${_FG_YELLOW}$identifier${_TX_RESET}' [Y/n]:" input
+
+  if [[ "$input" == "Y" || "$input" == "y" ]]; then
+    sed -i "/${identifier}/d" $_CONFIG_FILE_OPTIONS
+    sed -i "/_${identifier}_/d" $_CONFIG_FILE_PATH
+    echo -e "${_FG_GREEN}Success:${_TX_RESET} Config '$identifier' was deleted."
+  else
+    echo -e "${_FG_RED}INFO:${_TX_RESET} Config delete for '$identifier' was aborted."
+  fi
+}
+
 #
 # output script description.
 #
@@ -176,8 +299,8 @@ printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
   echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} get Transport Paths"
   echo -e "${_SPACE_4}${_FG_YELLOW}args${_TX_RESET} - Transport Number (e.g. DRPK902330)"
-  echo -e "${_SPACE_2}${_FG_RED}-a: ${_TX_RESET} add new Transport Path"
-  echo -e "${_SPACE_2}${_FG_RED}-d: ${_TX_RESET} delete a Transport Path"
+  echo -e "${_SPACE_2}${_FG_WHITE}-a: ${_TX_RESET} add new Transport Path"
+  echo -e "${_SPACE_2}${_FG_WHITE}-d: ${_TX_RESET} delete a Transport Path"
   echo ""
   echo -e "${_FG_CYAN}Additional Information: ${_TX_RESET}"
   echo -e "${_SPACE_2}Option -g can be passed multiple times."
@@ -188,9 +311,9 @@ printHelp() {
 #
 while getopts ":hg:ad" opt; do
   case ${opt} in
-    g ) checkAndDocumentTransports; transportNumbers+=("$OPTARG") ;;
-    a ) echo -e "${_FG_YELLOW}Option is not Implemented${_TX_RESET} \n" 1>&2 ;;
-    d ) echo -e "${_FG_YELLOW}Option is not Implemented${_TX_RESET} \n" 1>&2 ;;
+    g  ) checkAndDocumentTransports; transportNumbers+=("$OPTARG") ;;
+    a  ) handleConfig ;;
+    d  ) deleteConfig ;;
     h  ) printHelp exit 1;;
     \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
@@ -204,7 +327,8 @@ shift $((OPTIND -1))
 
 for transportNumber in "${transportNumbers[@]}"; do
     _TRANSPORT_NUMBER=$transportNumber
-    getTransportPath
+    ( getTransportPath ) | more
     echo ""
 done
 
+exit $PIPESTATUS
