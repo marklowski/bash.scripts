@@ -4,7 +4,7 @@
 #
 # Include's
 #
-_CONFIG_FILE=$HOME/.config/script-settings/pushChangesRaspi.cfg
+_CONFIG_FILE=$HOME/.local/share/script-settings/pushProjects.cfg
 source ~/.config/script-settings/sshData.cfg
 source $BASH_COLOR_INCL
 
