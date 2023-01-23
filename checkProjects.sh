@@ -4,7 +4,7 @@
 #
 # Include's
 #
-_CONFIG_FILE="$HOME/.config/script-settings/chkProjects.cfg"
+_CONFIG_FILE="$HOME/.config/script-settings/checkProjects.cfg"
 source $BASH_COLOR_INCL
 
 #
