@@ -19,10 +19,7 @@
 
 ### checkProjects.sh
 
-- add compress option, remember the following:
-    - removes 'INFO: No Directories found', as well as the header.
-    - when sub-directory has no changes,
-    - when sub-directories have no changes, also remove header
+-
 
 ### createProject.sh
 
