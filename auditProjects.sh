@@ -97,9 +97,9 @@ printHelp() {
   echo -e "${_SPACE_4}${_FG_YELLOW}arg:${_TX_RESET} project path"
   echo ""
   echo -e "${_FG_YELLOW}Not yet Implemented: ${_TX_RESET}"
-  echo -e "${_SPACE_2}${_FG_WHITE}-D: ${_TX_RESET} Delete node_modules Folder && package-lock-json"
-  echo -e "${_SPACE_2}${_FG_WHITE}-i: ${_TX_RESET} Install NPM Packages"
-  echo -e "${_SPACE_2}${_FG_WHITE}-u: ${_TX_RESET} Upgrade All NPM Packages"
+  echo -e "${_SPACE_2}${_FG_RED}-D: ${_TX_RESET} Delete node_modules Folder && package-lock-json"
+  echo -e "${_SPACE_2}${_FG_RED}-i: ${_TX_RESET} Install NPM Packages"
+  echo -e "${_SPACE_2}${_FG_RED}-u: ${_TX_RESET} Upgrade All NPM Packages"
 }
 
 #

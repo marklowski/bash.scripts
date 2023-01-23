@@ -281,8 +281,8 @@ main() {
 
     if [ $returnValue != 0 ]; then
         echo ""
-        echo -e "${_FG_BLUE}${_TX_BOLD}Aborting Script. ${_TX_RESET}"
-        echo -e "${_FG_RED}${_TX_BOLD}No Files were found!${_TX_RESET}"
+        echo -e "${_FG_BLUE}INFO:${_TX_RESET} Aborting Script."
+        echo -e "${_SPACE_2}No relevent Files were found!"
         return 1
     fi
 
@@ -305,15 +305,12 @@ main() {
 printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
 	echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Execute Program"
+	echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Sub-Script Functionality(SSF), Check if undocumented Files exist"
+	echo -e "${_SPACE_2}${_FG_WHITE}-s: ${_TX_RESET} SSF, Silent default Script execution"
 }
 
 #
 # handle script options.
-#
-# -h : is used for help menu
-# -e : default script execution
-# -c : Sub-Script Functionality(SSF), Check if undocumented Files exist
-# -s : SSF, Silent default Script execution
 #
 while getopts ":hecs" opt; do
 	case ${opt} in
@@ -328,5 +325,5 @@ while getopts ":hecs" opt; do
 done
 
 # Standard Behaviour when, no option was supplied.
-if ((OPTIND == 1)); then printHelp; fi
+if ((OPTIND == 1)); then main; fi
 shift $((OPTIND - 1))
