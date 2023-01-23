@@ -120,9 +120,9 @@ while getopts ":hbgri:c" opt; do
     r  ) _REMOTE_ARG="pi"; _REMOTE_SSH=$_RASPI_SSH; changeRemote ;;
     i  ) _REMOTE_ARG="$OPTARG"; selectRemoteSSH; changeRemote ;;
     h  ) printHelp exit 1;;
-    \? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    :  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    *  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 

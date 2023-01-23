@@ -4,7 +4,7 @@
 #
 # Include's
 #
-_CONFIG_FILE="$HOME/.config/script-settings/chkProjects.cfg"
+_CONFIG_FILE="$HOME/.config/script-settings/checkProjects.cfg"
 source $BASH_COLOR_INCL
 
 #
@@ -34,10 +34,11 @@ postScript() {
 # main script execution.
 #
 main() {
-  for line in $_PROJECTS; do echo -e "${_FG_WHITE}${_TX_BOLD}Checked Folder:${_TX_RESET} $line"
+  for line in $_PROJECTS; do
+    echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
 
     # Loop all sub-directories
-    for directories in $line*; do
+    for directories in $line/*; do
       if [[ -d $directories ]]; then
         cd $directories
         msg="";
@@ -66,7 +67,7 @@ main() {
       fi
     done
 
-    [ $_NO_DIRECTORIES = true ] && echo -e "${_FG_WHITE}${_TX_BOLD}INFO:${_TX_RESET}${_FG_BLUE} No Directories Found ${_TX_RESET}" || _NO_DIRECTORIES=true
+    [ $_NO_DIRECTORIES = true ] && echo -e "${_FG_BLUE}INFO:${_TX_RESET} No Directories Found" || _NO_DIRECTORIES=true
     echo ""
   done
 }

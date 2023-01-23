@@ -10,8 +10,8 @@ source $BASH_COLOR_INCL
 #
 # Global Variables
 #
-_REMINDER_FOLDER="$HOME/.config/script-settings"
-_REMINDER_FILE="$HOME/.config/script-settings/reminder.cfg"
+_REMINDER_FOLDER="$HOME/.local/share/script-settings"
+_REMINDER_FILE="$HOME/.local/share/script-settings/reminder.cfg"
 _PRP_FOLDER=$(cat $_CONFIG_FILE)
 _CURRENT_DATE=`date +"%Y-%m-%d"`
 

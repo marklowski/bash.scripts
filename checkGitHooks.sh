@@ -99,14 +99,12 @@ replaceHook() {
 # the current sub-directories and execute's the
 # corresponding option.
 #
-main() {
+executionMode() {
   option=$1
   argument=$2
 
-  for line in $PWD/
-  do
-    for directories in $line*
-    do
+  for line in $PWD/; do
+    for directories in $line*; do
       echo -e "${_FG_YELLOW}${directories##*/}: ${_TX_RESET}"
       cd $directories
 
@@ -114,11 +112,20 @@ main() {
         e ) printHook ;;
         r ) replaceHook "$argument" "IGNORE_NOT_FOUND" ;;
         i ) replaceHook "$argument" "INSERT_OR_REPLACE" ;;
-        * ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+        * ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$option" >&2; exit 1;;
       esac
       echo ""
     done
   done
+}
+#
+# only used to correctly, nest the more command.
+#
+main() {
+  option=$1
+  argument=$2
+
+  ( executionMode $option $argument ) | more
 }
 
 #
@@ -148,12 +155,13 @@ while getopts ":her:f:i:" opt; do
     i  ) main "i" "$OPTARG" exit 1 ;;
     f  ) _GIT_HOOK="$OPTARG" ;;
     h  ) printHelp exit 1 ;;
-    \? ) echo -e "${_FG_YELLOW}${_TX_BOLD}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    :  ) echo -e "${_FG_YELLOW}${_TX_BOLD}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    *  ) echo -e "${_FG_RED}${_TX_BOLD}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 
 # Standard Behaviour when, no option was supplied.
 if ((OPTIND == 1)); then main "e"; fi
 shift $((OPTIND -1))
+exit $PIPESTATUS

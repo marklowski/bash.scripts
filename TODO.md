@@ -19,7 +19,10 @@
 
 ### checkProjects.sh
 
--
+- add compress option, remember the following:
+    - removes 'INFO: No Directories found', as well as the header.
+    - when sub-directory has no changes,
+    - when sub-directories have no changes, also remove header
 
 ### createProject.sh
 
@@ -39,20 +42,21 @@
 
 ### prpScript.sh
 
-- reminder.cfg change to .local/share file
+- generalize to workScript, choose between different work directories  
 
 ### pushProjects.sh
 
-- pushProjects.cfg change to .local/share file
+- 
 
 ### raspiRepositorySelector.sh
 
--
+- implement first version of script
 
 ### transportScript
 
-- implement options
-  - a - add transport path
-  - d - delete transport path
+-
 
 ## Ideas
+
+- Script to automatically, implement symlink, etc for dotFiles directory.
+- Script to create the different config's.

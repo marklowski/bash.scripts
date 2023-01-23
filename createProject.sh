@@ -41,7 +41,7 @@ chooseVisibility() {
           [p]) _OPTION="--private"; break ;;
           [P]) _OPTION="--public"; break ;;
           *)
-            echo -e "${_FG_RED}${_TX_BOLD}Invalid input... ${_TX_RESET} \n" 1>&2
+            echo -e "${_FG_RED}Error:${_TX_RESET}Invalid input...\n" 1>&2
             echo "Choose between the following options:"
             echo -e "${_SPACE_2}p | Private Repository"
             echo -e "${_SPACE_2}P | Public Repository"
