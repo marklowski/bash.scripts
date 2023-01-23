@@ -93,7 +93,7 @@ printHelp() {
   echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
   echo -e "${_SPACE_2}${_FG_WHITE}-l: ${_TX_RESET} List would be Checked Projects"
   echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Check the above Project List for Vulnerabilities && Updates"
-  echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Check Single Project for Vulnerabilities && Updates"
+  echo -e "${_SPACE_2}${_FG_WHITE}-s: ${_TX_RESET} Check Single Project for Vulnerabilities && Updates"
   echo -e "${_SPACE_4}${_FG_YELLOW}arg:${_TX_RESET} project path"
   echo ""
   echo -e "${_FG_YELLOW}Not yet Implemented: ${_TX_RESET}"
@@ -106,17 +106,18 @@ printHelp() {
 # handle script options.
 #
 while getopts ":hlcs:" opt; do
-case ${opt} in
-		c  ) checkProjects exit 1 ;;
-		s  ) checkProject "$OPTARG" exit 1 ;;
-		l  ) listProjects exit 1 ;;
-		h  ) printHelp exit 1 ;;
-		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		*  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+  case ${opt} in
+    c  ) ( checkProjects ) | more; exit 1 ;;
+    s  ) checkProject "$OPTARG" exit 1 ;;
+    l  ) ( listProjects ) | more; exit 1 ;;
+    h  ) printHelp exit 1 ;;
+    \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
 	esac
 done
 
 # Standard Behaviour when, no option was supplied.
 if ((OPTIND == 1)); then printHelp; fi
 shift $((OPTIND -1))
+exit $PIPESTATUS
