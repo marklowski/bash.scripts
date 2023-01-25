@@ -78,20 +78,22 @@ getSystemDirectories() {
 #
 prepareDirectories() {
 
-  mkdir ./.config
-#  # check for .config directory
-#  if [ ! -d "$HOME/.config" ]; then
-#    mkdir -p $HOME/.config
-#  fi
-#
-#  # check .local/bin, not relevent for dotFiles but for bash.scripts
-#  if [ ! -d "$HOME/.local/bin" ]; then
-#    mkdir -p $HOME/.local/bin
-#  fi
+  # check for .config directory
+  if [ ! -d "$HOME/.config" ]; then
+    mkdir -p $HOME/.config
+  fi
+
+  # check .local/bin, not relevent for dotFiles but for bash.scripts
+  if [ ! -d "$HOME/.local/bin" ]; then
+    mkdir -p $HOME/.local/bin
+  fi
 
   echo -e "${_FG_BLUE}Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
 }
 
+#
+# compare '.config' and 'system/.config', because 'system/.config' is the leading directory.
+#
 checkSystemDirectory() {
   checkDirectory=$1
 
@@ -102,10 +104,11 @@ checkSystemDirectory() {
     fi
   done
 }
+
 #
 # link dotFiles/.config directories, while checking system directory.
 #
-linkDotConfig() {
+linkConfigDirectory() {
   
   # loop over dotFiles directory.
   for entry in "$_DOTFILES_PATH"/.config/*; do
@@ -124,8 +127,13 @@ linkDotConfig() {
       fi
     fi
   done
+
+  echo -e "${_FG_BLUE}Info (2/3):${_TX_RESET} Directory prepartions complete!\n"
 }
 
+#
+# main script execution sequence.
+#
 main() {
   systemDirectory=$1
 
@@ -133,8 +141,9 @@ main() {
 
   prepareDirectories
 
-  linkDotConfig
+  linkConfigDirectory
 }
+
 #
 # output script description.
 #
