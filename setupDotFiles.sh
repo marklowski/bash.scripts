@@ -12,10 +12,10 @@ source $BASH_COLOR_INCL
 #
 _QUICK_SELECT=false
 _SELECTED_ITEM_INDEX=""
+_SELECTED_ITEM_TEXT=""
 _TARGET_DIRECTORY=./.config
 
 declare -a _DIRECTORIES
-declare -a _DIRECTORIES_SHORTEND
 declare -a _FILES
 
 #
@@ -28,6 +28,7 @@ setSystemDirectory() {
     for item in "${_DIRECTORIES[@]##*/}"; do
       if [[ $item == $option ]]; then
         echo -e "Proceeding with ${_FG_BLUE}${item^^}${_TX_RESET}\n"
+        _SELECTED_ITEM_TEXT=${item^^}
         _SELECTED_ITEM_INDEX=$REPLY
         break 2
       fi
@@ -94,7 +95,7 @@ prepareDirectories() {
 #
 # compare '.config' and 'system/.config', because 'system/.config' is the leading directory.
 #
-checkSystemDirectory() {
+checkConfigDirectory() {
   checkDirectory=$1
 
   # check if system Directory/.config has the corresponding directory
@@ -109,26 +110,63 @@ checkSystemDirectory() {
 # link dotFiles/.config directories, while checking system directory.
 #
 linkConfigDirectory() {
+  declare -A ignoreDirectories
   
-  # loop over dotFiles directory.
+  # loop over dotFiles/.config directory
   for entry in "$_DOTFILES_PATH"/.config/*; do
       
     # when directory found add to array.
     if [ -d "$entry" ]; then
-      checkSystemDirectory ${entry##*/}
+      checkConfigDirectory ${entry##*/}
       returnValue=$?
 
       if [ $returnValue == 1 ]; then
-        echo $subEntry
-        ln -sf $subEntry $_TARGET_DIRECTORY
+        #ln -sf $subEntry $_TARGET_DIRECTORY
+        ignoreDirectories+=("${subEntry##*/}")
       else
-        echo $entry
-        ln -sf $entry $_TARGET_DIRECTORY
+        #ln -sf $entry $_TARGET_DIRECTORY
+        ignoreDirectories+=("${entry##*/}")
       fi
     fi
   done
 
-  echo -e "${_FG_BLUE}Info (2/3):${_TX_RESET} Directory prepartions complete!\n"
+  for entry in "${ignoreDirectories[@]}"; do
+    echo $entry
+  done
+
+  # loop over systemDirectory/.config directory
+  for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.config/*; do
+
+    if [[ ! ${ignoreDirectories[*]} =~ $entry ]]; then
+      echo "$entry would be handled"
+    fi
+  done
+  echo -e "${_FG_BLUE}Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
+}
+
+#
+# check if multiple files.
+#
+checkConfigFiles() {
+  checkFile=$1
+
+ echo "$checkFile" 
+}
+
+#
+# link the different config files.
+#
+linkConfigFiles() {
+  
+  # loop over system specific .Files
+  for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.*; do
+
+    if [ -f "$entry" ]; then
+      checkConfigFiles ${entry##*/}
+    fi
+  done
+
+  echo -e "${_FG_BLUE}Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
 }
 
 #
@@ -142,6 +180,8 @@ main() {
   prepareDirectories
 
   linkConfigDirectory
+
+  linkConfigFiles
 }
 
 #
