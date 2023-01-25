@@ -6,11 +6,30 @@ Custom Scripts that help with my everyday Workflow.
 
 ## Post Installation:
 
+### Display Colors
+
 add a line that references the color include in your shell, 
 so the scripts can run correctly.
 
 ```sh
     export BASH_COLOR_INCL=~/.local/bin/includes/incl.Colors
+```
+
+### Display Icons
+
+To correctly display Icons, first step would be to use a Nerd Font, afterwards
+clone the nerd-font github repo and follow the corresponding [Wiki entry](https://github.com/ryanoasis/nerd-fonts/wiki/Icon-Names-in-Shell)
+when the scripts are available at **~/.local/share/fonts**, then add
+the following environment variable to your shell '*rc' file.
+
+```sh
+    export BASH_ICON_INCL=~/.local/bin/includes/incl.Icons
+```
+
+Example incl.Icons
+
+```sh
+    source ~/.local/share/fonts/i_material.sh
 ```
 
 ---
