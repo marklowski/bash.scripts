@@ -6,6 +6,7 @@
 #
 _CONFIG_FILE="$HOME/.config/script-settings/checkProjects.cfg"
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL
 
 #
 # Global Variables
@@ -49,17 +50,17 @@ main() {
         if [ -d "$_GIT_BASED" ]; then
           test=$(git status);
 
-          # Check Local Repository for changes
-          if [[ $test == *"nothing to commit"* ]]; then
-            msg="${_FG_CYAN} No Changes "; ignoreOutput=true
-            # Check if git status has unstaged changes
-          elif [[ $test == *"Changes not staged for commit"* ]]; then
-            msg="${_FG_YELLOW} Unstaged changes "; ignoreOutput=false
-            # Check if git status has uncommitted changes
-          elif [[ $test == *"Untracked files"* ]]; then
-            msg="${_FG_RED} You forgot to commit some files "; ignoreOutput=false
-          elif [[ $test == *"Changes to be committed"* ]]; then
-					  msg="${_FG_PURPLE} Staged Changes but not Commited "; ignoreOutput=false
+          # check git status, and print a corresponding message
+          if [[ $test == *"branch is ahead of"* ]]; then # changes not pushed
+					  msg="${_FG_MAGENTA} Commited Changes but not pushed ${i_mdi_flag_outline}"; ignoreOutput=false
+          elif [[ $test == *"nothing to commit"* ]]; then # repository has no changes
+            msg="${_FG_CYAN} No Changes $i_mdi_check"; ignoreOutput=true
+          elif [[ $test == *"Changes not staged for commit"* ]]; then # Check if git status has unstaged changes
+            msg="${_FG_YELLOW} Unstaged changes $i_oct_zap"; ignoreOutput=false
+          elif [[ $test == *"Untracked files"* ]]; then # Check if git status has uncommitted changes
+            msg="${_FG_RED} You forgot to commit some files $i_pom_internal_interruption"; ignoreOutput=false
+          elif [[ $test == *"Changes to be committed"* ]]; then # Check if git status has uncommitted changes
+					  msg="${_FG_BLUE} Staged Changes but not Commited $i_pom_external_interruption"; ignoreOutput=false
 				  fi
 
           if $_COMPRESS_OUTPUT; then
