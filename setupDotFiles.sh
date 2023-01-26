@@ -6,6 +6,7 @@
 #
 _DOTFILES_PATH=$HOME/dotFiles
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL
 
 #
 # Global Variables
@@ -45,7 +46,7 @@ getSystemDirectories() {
 
   # loop over dotFiles directory.
   for entry in "$_DOTFILES_PATH"/*; do
-      
+
     # when directory found add to array.
     if [ -d "$entry" ]; then
       _DIRECTORIES[$directoryCounter]=$entry
@@ -53,10 +54,10 @@ getSystemDirectories() {
       # when quick select active, check if userInput is available & break;
       # otherwise send setSystemDirectory Dialog
       if $_QUICK_SELECT; then
-        if [[ ${entry##*/} == $systemDirectory ]]; then 
+        if [[ ${entry##*/} == $systemDirectory ]]; then
           echo -e "Proceeding with ${_FG_BLUE}${systemDirectory^^}${_TX_RESET}\n"
 
-          _SELECTED_ITEM_INDEX=directoryCounter; 
+          _SELECTED_ITEM_INDEX=directoryCounter;
           break;
         fi
       fi
@@ -89,7 +90,7 @@ prepareDirectories() {
     mkdir -p $HOME/.local/bin
   fi
 
-  echo -e "${_FG_BLUE}Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
+  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
 }
 
 #
@@ -107,14 +108,30 @@ checkConfigDirectory() {
 }
 
 #
+# check entry for double tags.
+#
+# @param(checkDirectory) - expects the path to the file with '/' at the end of it.
+# @param(checkEntry) - corresponding entry that has to be checked.
+# @param()
+checkHasTags() {
+  checkDirectory=$1
+  checkEntry=$2
+
+    # check possible entry 'directory path / cut entry at first . and add .*' with 
+  for subEntry in "${checkDirectory}${checkEntry%%'.'*}".*; do
+    echo $subEntry
+    ignoreDirectories+=("$subEntry")
+  done
+}
+
+#
 # link dotFiles/.config directories, while checking system directory.
 #
 linkConfigDirectory() {
-  declare -A ignoreDirectories
-  
+
   # loop over dotFiles/.config directory
   for entry in "$_DOTFILES_PATH"/.config/*; do
-      
+
     # when directory found add to array.
     if [ -d "$entry" ]; then
       checkConfigDirectory ${entry##*/}
@@ -122,26 +139,24 @@ linkConfigDirectory() {
 
       if [ $returnValue == 1 ]; then
         #ln -sf $subEntry $_TARGET_DIRECTORY
-        ignoreDirectories+=("${subEntry##*/}")
+        ignoreDirectories+=("$subEntry")
       else
+        abc=1
         #ln -sf $entry $_TARGET_DIRECTORY
-        ignoreDirectories+=("${entry##*/}")
       fi
     fi
-  done
-
-  for entry in "${ignoreDirectories[@]}"; do
-    echo $entry
   done
 
   # loop over systemDirectory/.config directory
   for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.config/*; do
 
+    # check if entry is within already copied directories.
     if [[ ! ${ignoreDirectories[*]} =~ $entry ]]; then
-      echo "$entry would be handled"
+
+      checkHasTags "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/.config/" ${entry##*/}
     fi
   done
-  echo -e "${_FG_BLUE}Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
+  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
 }
 
 #
@@ -150,14 +165,14 @@ linkConfigDirectory() {
 checkConfigFiles() {
   checkFile=$1
 
- echo "$checkFile" 
+ echo "$checkFile"
 }
 
 #
 # link the different config files.
 #
 linkConfigFiles() {
-  
+
   # loop over system specific .Files
   for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.*; do
 
@@ -166,7 +181,7 @@ linkConfigFiles() {
     fi
   done
 
-  echo -e "${_FG_BLUE}Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
+  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
 }
 
 #
