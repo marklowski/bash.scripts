@@ -55,5 +55,4 @@
 
 ## Ideas
 
-- Script to automatically, implement symlink, etc for dotFiles directory.
 - Script to create the different config's.
