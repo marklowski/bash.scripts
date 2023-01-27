@@ -128,6 +128,12 @@ not yet implmented.
 
 ---
 
+### setupDotFiles.sh
+
+when executed in the home directory **cd ~**, the corresponding config files get linked.
+
+---
+
 ### transportScript
 
 build the corresponding transport path's for a sap system, according to a given transport.
