@@ -17,61 +17,60 @@ _SELECTED_ITEM_TEXT=""
 _TARGET_DIRECTORY=./.config
 
 declare -a _DIRECTORIES
-declare -a _FILES
 
 #
 # set corresponding system directory.
 #
 setSystemDirectory() {
-  PS3="dotFile System Ordner wählen: "
+    PS3="dotFile System Ordner wählen: "
 
-  select option in "${_DIRECTORIES[@]##*/}"; do
-    for item in "${_DIRECTORIES[@]##*/}"; do
-      if [[ $item == $option ]]; then
-        echo -e "Proceeding with ${_FG_BLUE}${item^^}${_TX_RESET}\n"
-        _SELECTED_ITEM_TEXT=${item^^}
-        _SELECTED_ITEM_INDEX=$REPLY
-        break 2
-      fi
+    select option in "${_DIRECTORIES[@]##*/}"; do
+        for item in "${_DIRECTORIES[@]##*/}"; do
+            if [[ $item == $option ]]; then
+                echo -e "Proceeding with ${_FG_BLUE}${item^^}${_TX_RESET}\n"
+                _SELECTED_ITEM_TEXT=${item^^}
+                _SELECTED_ITEM_INDEX=$REPLY
+                break 2
+            fi
+        done
     done
-  done
 }
 
 #
 # get the configured system directories.
 #
 getSystemDirectories() {
-  systemDirectory=$1
-  directoryCounter=1
+    systemDirectory=$1
+    directoryCounter=1
 
   # loop over dotFiles directory.
   for entry in "$_DOTFILES_PATH"/*; do
 
     # when directory found add to array.
     if [ -d "$entry" ]; then
-      _DIRECTORIES[$directoryCounter]=$entry
+        _DIRECTORIES[$directoryCounter]=$entry
 
       # when quick select active, check if userInput is available & break;
       # otherwise send setSystemDirectory Dialog
       if $_QUICK_SELECT; then
-        if [[ ${entry##*/} == $systemDirectory ]]; then
-          echo -e "Proceeding with ${_FG_BLUE}${systemDirectory^^}${_TX_RESET}\n"
+          if [[ ${entry##*/} == $systemDirectory ]]; then
+              echo -e "Proceeding with ${_FG_BLUE}${systemDirectory^^}${_TX_RESET}\n"
 
-          _SELECTED_ITEM_INDEX=directoryCounter;
-          break;
-        fi
+              _SELECTED_ITEM_INDEX=directoryCounter;
+              break;
+          fi
       fi
 
       directoryCounter=$(($directoryCounter+1))
     fi
-  done
+done
 
   # when Item was pre selected handle standard dialog
   if [[ $_SELECTED_ITEM_INDEX == "" ]]; then
-    if $_QUICK_SELECT; then
-      echo -e "${_FG_RED}Error:${_TX_RESET} The Argument ${systemDirectory^^} wasn't found!\n"
-    fi
-    setSystemDirectory
+      if $_QUICK_SELECT; then
+          echo -e "${_FG_RED}Error:${_TX_RESET} The Argument ${systemDirectory^^} wasn't found!\n"
+      fi
+      setSystemDirectory
   fi
 }
 
@@ -82,12 +81,12 @@ prepareDirectories() {
 
   # check for .config directory
   if [ ! -d "$HOME/.config" ]; then
-    mkdir -p $HOME/.config
+      mkdir -p $HOME/.config
   fi
 
   # check .local/bin, not relevent for dotFiles but for bash.scripts
   if [ ! -d "$HOME/.local/bin" ]; then
-    mkdir -p $HOME/.local/bin
+      mkdir -p $HOME/.local/bin
   fi
 }
 
@@ -95,13 +94,13 @@ prepareDirectories() {
 # compare '.config' and 'system/.config', because 'system/.config' is the leading directory.
 #
 checkConfigDirectory() {
-  checkDirectory=$1
+    checkDirectory=$1
 
   # check if system Directory/.config has the corresponding directory
   for subEntry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.config/*; do
-    if [[ "${subEntry##*/}" == "${checkDirectory}" ]]; then
-      return 1
-    fi
+      if [[ "${subEntry##*/}" == "${checkDirectory}" ]]; then
+          return 1
+      fi
   done
 }
 
@@ -113,56 +112,56 @@ checkConfigDirectory() {
 # @param(isDirectory) - different handling for directory/files.
 #
 checkHasTags(){
-  directoryPath=$1
-  checkEntry=$2
-  isDirectory=$3
-  linkEntry=""
+    directoryPath=$1
+    checkEntry=$2
+    isDirectory=$3
+    linkEntry=""
 
-  declare -a tagArray
+    declare -a tagArray
 
-  if $isDirectory; then
+    if $isDirectory; then
 
     # check possible entry directory path / cut entry at first . and add .*' with
     for subEntry in "${directoryPath}${checkEntry%%'.'*}".*; do
-      ignoreDirectories+=("$subEntry")
-      tagArray+=("${subEntry##*.}")
+        ignoreDirectories+=("$subEntry")
+        tagArray+=("${subEntry##*.}")
     done
 
     # pick from possible tags
     PS3="Ein Variante vom Ordner ${_FG_BLUE}'${checkEntry%%'.'*}'${_TX_RESET} wählen: "
     select option in "${tagArray[@]}"; do
-      for item in "${tagArray[@]}"; do
-        if [[ $item == $option ]]; then
-          pickedEntry="${checkEntry%%'.'*}.$item"
-          break 2
-        fi
-      done
+        for item in "${tagArray[@]}"; do
+            if [[ $item == $option ]]; then
+                pickedEntry="${checkEntry%%'.'*}.$item"
+                break 2
+            fi
+        done
     done
 
     echo ""
-  else
+else
     preparedEntry=${checkEntry:1}
 
       # check possible entry 'directory path / cut entry at first . and add .*' with
       for subEntry in "${directoryPath}.${preparedEntry%%'.'*}".*; do
-        if [[ $subEntry != *"*"* ]]; then
-          tagArray+=("${subEntry##*.}")
-          ignoreFiles+=("$subEntry")
-        fi
+          if [[ $subEntry != *"*"* ]]; then
+              tagArray+=("${subEntry##*.}")
+              ignoreFiles+=("$subEntry")
+          fi
       done
 
     # pick from possible tags
     PS3="Ein Variante von der Datei ${_FG_BLUE}'${preparedEntry%%'.'*}'${_TX_RESET} wählen: "
-      select option in "${tagArray[@]}"; do
+    select option in "${tagArray[@]}"; do
         for item in "${tagArray[@]}"; do
-          if [[ $item == $option ]]; then
-            pickedEntry=".${preparedEntry%%'.'*}.$item"
-            break 2
-          fi
+            if [[ $item == $option ]]; then
+                pickedEntry=".${preparedEntry%%'.'*}.$item"
+                break 2
+            fi
         done
-      done
-      echo ""
-  fi
+    done
+    echo ""
+    fi
 }
 
 #
@@ -175,17 +174,17 @@ linkConfigDirectory() {
 
     # when directory found add to array.
     if [ -d "$entry" ]; then
-      checkConfigDirectory ${entry##*/}
-      returnValue=$?
+        checkConfigDirectory ${entry##*/}
+        returnValue=$?
 
-      if [ $returnValue == 1 ]; then
-        ln -sf $subEntry $_TARGET_DIRECTORY/
-        ignoreDirectories+=("$subEntry")
-      else
-        ln -sf $entry $_TARGET_DIRECTORY/
-      fi
+        if [ $returnValue == 1 ]; then
+            ln -sf $subEntry $_TARGET_DIRECTORY/
+            ignoreDirectories+=("$subEntry")
+        else
+            ln -sf $entry $_TARGET_DIRECTORY/
+        fi
     fi
-  done
+done
 
   # loop over systemDirectory/.config directory
   for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.config/*; do
@@ -193,14 +192,14 @@ linkConfigDirectory() {
     # check if entry is within already copied directories.
     if [[ ! ${ignoreDirectories[*]} =~ $entry ]]; then
 
-      pickedEntry=""
-      checkHasTags "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/.config/" ${entry##*/} true
+        pickedEntry=""
+        checkHasTags "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/.config/" ${entry##*/} true
 
-      if [[ $pickedEntry != "" ]]; then
-        ln -sf ${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/.config/$pickedEntry "$_TARGET_DIRECTORY/${pickedEntry%%'.'*}"
-      fi
+        if [[ $pickedEntry != "" ]]; then
+            ln -sf ${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/.config/$pickedEntry "$_TARGET_DIRECTORY/${pickedEntry%%'.'*}"
+        fi
     fi
-  done
+done
 }
 
 #
@@ -211,20 +210,20 @@ linkConfigFiles() {
   # loop over system specific .Files
   for entry in "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}"/.*; do
 
-    if [ -f "$entry" ]; then
-      if ([[ ! $entry == *".aliases"* ]] && [[ ! $entry == *".zsh-keymapping"* ]]); then
-        if [[ ! ${ignoreFiles[*]} =~ $entry ]]; then
-          pickedEntry=""
-          checkHasTags "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/" ${entry##*/} false
+      if [ -f "$entry" ]; then
+          if ([[ ! $entry == *".aliases"* ]] && [[ ! $entry == *".zsh-keymapping"* ]]); then
+              if [[ ! ${ignoreFiles[*]} =~ $entry ]]; then
+                  pickedEntry=""
+                  checkHasTags "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/" ${entry##*/} false
 
-          if [[ $pickedEntry != "" ]]; then
-            ln -sf "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/$pickedEntry" "./.${preparedEntry%%'.'*}"
-          else
-            ln -sf "$entry" ./
+                  if [[ $pickedEntry != "" ]]; then
+                      ln -sf "${_DIRECTORIES[$_SELECTED_ITEM_INDEX]}/$pickedEntry" "./.${preparedEntry%%'.'*}"
+                  else
+                      ln -sf "$entry" ./
+                  fi
+              fi
           fi
-        fi
       fi
-    fi
   done
 }
 
@@ -232,45 +231,45 @@ linkConfigFiles() {
 # main script execution sequence.
 #
 main() {
-  systemDirectory=$1
+    systemDirectory=$1
 
-  getSystemDirectories $systemDirectory
+    getSystemDirectories $systemDirectory
 
-  prepareDirectories
+    prepareDirectories
 
-  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
+    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
 
-  linkConfigDirectory
+    linkConfigDirectory
 
-  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
+    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
 
-  linkConfigFiles
+    linkConfigFiles
 
-  echo -e "${_FG_BLUE}$i_mdi_information_variant Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
-  echo -e "${_FG_GREEN}$i_mdi_check Success :${_TX_RESET} setup was completed!\n"
+    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
+    echo -e "${_FG_GREEN}$i_mdi_check Success :${_TX_RESET} setup was completed!\n"
 }
 
 #
 # output script description.
 #
 printHelp() {
-  echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
-  echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Normal Execution Mode (with Dialog)"
-  echo -e "${_SPACE_2}${_FG_WHITE}-q: ${_TX_RESET} Quick Execution Mode (Dialog Fallback)"
+    echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
+    echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Normal Execution Mode (with Dialog)"
+    echo -e "${_SPACE_2}${_FG_WHITE}-q: ${_TX_RESET} Quick Execution Mode (Dialog Fallback)"
 }
 
 #
 # handle script options.
 #
 while getopts ":heq:" opt; do
-  case ${opt} in
-    e  ) main ;;
-    q  ) _QUICK_SELECT=true; main "$OPTARG" ;;
-    h  ) printHelp exit 1;;
-    \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-    *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-  esac
+    case ${opt} in
+        e  ) main ;;
+        q  ) _QUICK_SELECT=true; main "$OPTARG" ;;
+        h  ) printHelp exit 1;;
+        \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+        :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+        *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    esac
 done
 
 # Standard Behaviour when, no option was supplied.

@@ -15,19 +15,18 @@ _SYMLINK_PATH=""
 
 _GIT_SUFFIX='.git'
 
-_REPOSITORY=$1
 _POST_RECEIVE_HOOK="$HOME/post-receive"
 
 # Split imported String into Folder/Repository
 readarray -d . -t repository_array <<< "$_NEW_REPOSITORY"
 for (( counter=0; counter < ${#repository_array[*]}; counter++))
 do
-   if [ $counter = 0 ]; then
-       _REPOSITORY_PREFIX=$_DIRECTORY_PATH${repository_array[counter]}
-   else
-       [[ -n $_REPOSITORY_NAME ]] && buffer="$_REPOSITORY_NAME."
-       _REPOSITORY_NAME="$buffer${repository_array[counter]}"
-   fi 
+    if [ $counter = 0 ]; then
+        _REPOSITORY_PREFIX=$_DIRECTORY_PATH${repository_array[counter]}
+    else
+        [[ -n $_REPOSITORY_NAME ]] && buffer="$_REPOSITORY_NAME."
+        _REPOSITORY_NAME="$buffer${repository_array[counter]}"
+    fi 
 done
 
 # remove whitespaces and set directory path

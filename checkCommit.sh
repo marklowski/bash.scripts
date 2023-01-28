@@ -14,11 +14,11 @@ remoteRef=$( git rev-parse $remoteBranch )
 echo Checked Git Remote $gitRemote with Branch $gitBranch
 
 if [[ "$localRef" == "$remoteRef" ]]; then
-  echo up-to-date
+    echo up-to-date
 elif [[ "$localRef" == "$base" ]]; then
-  echo behind
+    echo behind
 elif [[ "$remoteRef" == "$base" ]]; then
-  echo ahead
+    echo ahead
 else
-  echo diverged
+    echo diverged
 fi

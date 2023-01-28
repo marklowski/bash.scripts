@@ -192,7 +192,7 @@ writeLog() {
     checkREADME
 
     if [ "$exectuionMode" == "PREVIEW" ]; then
-		echo -e "${_FG_BLUE}Log Preview: ${_TX_RESET}"
+        echo -e "${_FG_BLUE}Log Preview: ${_TX_RESET}"
         echo ""
         echo -e "${_FG_BLUE}---${_TX_RESET}"
     fi
@@ -233,18 +233,18 @@ dialogWriteLog() {
                 moveFiles
 
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-	                echo -e "${_FG_YELLOW}Finished Script ${_TX_RESET}"
+                    echo -e "${_FG_YELLOW}Finished Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             [nN][oO]|[nN])
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-			        echo -e "${_FG_BLUE}Aborting Script ${_TX_RESET}"
+                    echo -e "${_FG_BLUE}Aborting Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             *)
-			    echo -e "${_FG_RED}Invalid input... ${_TX_RESET}"
+                echo -e "${_FG_RED}Invalid input... ${_TX_RESET}"
                 echo ""
                 ;;
         esac
@@ -303,24 +303,24 @@ main() {
 # output script description.
 #
 printHelp() {
-  echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
-	echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Execute Program"
-	echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Sub-Script Functionality(SSF), Check if undocumented Files exist"
-	echo -e "${_SPACE_2}${_FG_WHITE}-s: ${_TX_RESET} SSF, Silent default Script execution"
+    echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
+    echo -e "${_SPACE_2}${_FG_WHITE}-e: ${_TX_RESET} Execute Program"
+    echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} Sub-Script Functionality(SSF), Check if undocumented Files exist"
+    echo -e "${_SPACE_2}${_FG_WHITE}-s: ${_TX_RESET} SSF, Silent default Script execution"
 }
 
 #
 # handle script options.
 #
 while getopts ":hecs" opt; do
-	case ${opt} in
-    e ) main ;;
-    c ) _EXECUTION_MODE="EXTERNAL"; checkFiles ;;
-    s ) _EXECUTION_MODE="SILENT"; main ;;
-		h  ) printHelp exit 1;;
-		\? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		:  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
-		*  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+    case ${opt} in
+        e ) main ;;
+        c ) _EXECUTION_MODE="EXTERNAL"; checkFiles ;;
+        s ) _EXECUTION_MODE="SILENT"; main ;;
+        h  ) printHelp exit 1;;
+        \? ) echo -e "${_FG_YELLOW}Unknown Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+        :  ) echo -e "${_FG_YELLOW}Missing option argument for ${_TX_RESET} -$OPTARG" >&2; exit 1;;
+        *  ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$OPTARG" >&2; exit 1;;
     esac
 done
 
