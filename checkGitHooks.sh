@@ -40,7 +40,7 @@ checkExistence() {
     if [ -e "$hookPath" ]; then
         return 0
     else
-        echo -e "${_SPACE_2}${_FG_BLUE}Info:${_TX_RESET} Hook '$_GIT_HOOK' does not exist."
+        echo -e "${_SPACE_2}${_FG_BLUE}Info:${_TX_RESET} Hook ${_FG_YELLOW}'$_GIT_HOOK'${_TX_RESET} does not exist."
         return 1
     fi
 } 
@@ -105,16 +105,18 @@ executionMode() {
 
     for line in $PWD/; do
         for directories in $line*; do
-            echo -e "${_FG_YELLOW}${directories##*/}: ${_TX_RESET}"
-            cd $directories
+            if [ -d $directories ]; then
+                echo -e "${_FG_BLUE}Checked Folder:${_TX_RESET} ${directories##*/}"
+                cd $directories
 
-            case $option in
-                e ) printHook ;;
-                r ) replaceHook "$argument" "IGNORE_NOT_FOUND" ;;
-                i ) replaceHook "$argument" "INSERT_OR_REPLACE" ;;
-                * ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$option" >&2; exit 1;;
-            esac
-            echo ""
+                case $option in
+                    e ) printHook ;;
+                    r ) replaceHook "$argument" "IGNORE_NOT_FOUND" ;;
+                    i ) replaceHook "$argument" "INSERT_OR_REPLACE" ;;
+                    * ) echo -e "${_FG_RED}Unimplemented Option: ${_TX_RESET} -$option" >&2; exit 1;;
+                esac
+                echo ""
+            fi
         done
     done
 }
