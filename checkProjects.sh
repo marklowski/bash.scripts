@@ -41,57 +41,58 @@ main() {
 
     for line in $_PROJECTS; do
 
-    # Loop all sub-directories
-    for directories in $line/*; do
-        if [[ -d $directories ]]; then
-            cd $directories
-            msg="";
+        # Loop all sub-directories
+        for directories in $line/*; do
+            if [[ -d $directories ]]; then
+                cd $directories
+                msg="";
 
-            if [ -d "$_GIT_BASED" ]; then
-                test=$(git status);
+                if [ -d "$_GIT_BASED" ]; then
+                    test=$(git status);
 
-          # check git status, and print a corresponding message
-          if [[ $test == *"branch is ahead of"* ]]; then # changes not pushed
-              msg="${_FG_MAGENTA} Commited Changes but not pushed ${i_mdi_flag_outline}"; ignoreOutput=false
-          elif [[ $test == *"nothing to commit"* ]]; then # repository has no changes
-              msg="${_FG_CYAN} No Changes $i_mdi_check"; ignoreOutput=true
-          elif [[ $test == *"Changes not staged for commit"* ]]; then # Check if git status has unstaged changes
-              msg="${_FG_YELLOW} Unstaged changes $i_oct_zap"; ignoreOutput=false
-          elif [[ $test == *"Untracked files"* ]]; then # Check if git status has uncommitted changes
-              msg="${_FG_RED} You forgot to commit some files $i_pom_internal_interruption"; ignoreOutput=false
-          elif [[ $test == *"Changes to be committed"* ]]; then # Check if git status has uncommitted changes
-              msg="${_FG_BLUE} Staged Changes but not Commited $i_pom_external_interruption"; ignoreOutput=false
-          fi
+                    # check git status, and print a corresponding message
+                    if [[ $test == *"branch is ahead of"* ]]; then # changes not pushed
+                        msg="${_FG_MAGENTA} Commited Changes but not pushed ${i_mdi_flag_outline}"; ignoreOutput=false
+                    elif [[ $test == *"nothing to commit"* ]]; then # repository has no changes
+                        msg="${_FG_CYAN} No Changes $i_mdi_check"; ignoreOutput=true
+                    elif [[ $test == *"Changes not staged for commit"* ]]; then # Check if git status has unstaged changes
+                        msg="${_FG_YELLOW} Unstaged changes $i_oct_zap"; ignoreOutput=false
+                    elif [[ $test == *"Untracked files"* ]]; then # Check if git status has uncommitted changes
+                        msg="${_FG_RED} You forgot to commit some files $i_pom_internal_interruption"; ignoreOutput=false
+                    elif [[ $test == *"Changes to be committed"* ]]; then # Check if git status has uncommitted changes
+                        msg="${_FG_BLUE} Staged Changes but not Commited $i_pom_external_interruption"; ignoreOutput=false
+                    fi
 
-          if $_COMPRESS_OUTPUT; then
-              if ! $ignoreOutput; then
-                  if $outputHeader; then
-                      echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
-                      outputHeader=false
-                  fi
+                    if $_COMPRESS_OUTPUT; then
+                        if ! $ignoreOutput; then
+                            if $outputHeader; then
+                                echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
+                                outputHeader=false
+                            fi
 
-                  echo -e "${directories##*/}:$msg${_TX_RESET}"
-              fi
-          else
-              if $outputHeader; then
-                  echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
-                  outputHeader=false
-              fi
+                            echo -e "${directories##*/}:$msg${_TX_RESET}"
+                        fi
+                    else
+                        if $outputHeader; then
+                            echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
+                            outputHeader=false
+                        fi
 
-              echo -e "${directories##*/}:$msg${_TX_RESET}"
-          fi
-          cd ..
+                        echo -e "${directories##*/}:$msg${_TX_RESET}"
+                    fi
+
+                    cd ..
+                fi
+
+                [ $_NO_DIRECTORIES = true ] && _NO_DIRECTORIES=false
             fi
+        done
 
-            [ $_NO_DIRECTORIES = true ] && _NO_DIRECTORIES=false
-        fi
+        [ $_NO_DIRECTORIES ] && [ ! $_COMPRESS_OUTPUT ] && echo -e "${_FG_BLUE}INFO:${_TX_RESET} No Directories Found" || _NO_DIRECTORIES=true
+        [ $outputHeader = false ] && echo ""
+
+        outputHeader=true
     done
-
-    [ $_NO_DIRECTORIES ] && [ ! $_COMPRESS_OUTPUT ] && echo -e "${_FG_BLUE}INFO:${_TX_RESET} No Directories Found" || _NO_DIRECTORIES=true
-    [ $outputHeader = false ] && echo ""
-
-    outputHeader=true
-done
 }
 
 #
