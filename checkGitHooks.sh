@@ -20,12 +20,12 @@ _GIT_HOOK=""
 getHookPath() {
     hookPath="$_GIT_HOOK_DIR/post-commit"
 
-  # check if different hook was supplied, and replace when needed
-  if [ ! -z "$_GIT_HOOK" ]; then
-      hookPath="$_GIT_HOOK_DIR/$_GIT_HOOK"
-  else
-      _GIT_HOOK="post-commit" # otherwise set default value
-  fi
+    # check if different hook was supplied, and replace when needed
+    if [ ! -z "$_GIT_HOOK" ]; then
+        hookPath="$_GIT_HOOK_DIR/$_GIT_HOOK"
+    else
+        _GIT_HOOK="post-commit" # otherwise set default value
+    fi
 
   # used for inline return
   eval "$1='$hookPath'"
@@ -74,24 +74,24 @@ replaceHook() {
     executionOption=$2
 
     hookPath=""
-    getHookPath hookPath 
+    getHookPath hookPath
 
-  # handle different Execution Options
-  if [ "$executionOption" == "IGNORE_NOT_FOUND" ]; then
-      checkExistence $hookPath
-      returnValue=$?
-  elif [ "$executionOption" == "INSERT_OR_REPLACE" ]; then
-      hookPath="$_GIT_HOOK_DIR/"
-      returnValue=0
-  fi
+    # handle different Execution Options
+    if [ "$executionOption" == "IGNORE_NOT_FOUND" ]; then
+        checkExistence $hookPath
+        returnValue=$?
+    elif [ "$executionOption" == "INSERT_OR_REPLACE" ]; then
+        hookPath="$_GIT_HOOK_DIR/"
+        returnValue=0
+    fi
 
-  if [ $returnValue == 0 ]; then
-      cp "$replacementPath" "$hookPath"
-      echo -e "${_SPACE_2}${_FG_GREEN}Success:${_TX_RESET} Hook '$_GIT_HOOK' was changed."
-  else
-      echo -e "${_SPACE_8}No Action was taken. Execute with option ${_FG_WHITE}-i${_TX_RESET},"
-      echo -e "${_SPACE_8}when Hook should be inserted regardless"
-  fi
+    if [ $returnValue == 0 ]; then
+        cp "$replacementPath" "$hookPath"
+        echo -e "${_SPACE_2}${_FG_GREEN}Success:${_TX_RESET} Hook '$_GIT_HOOK' was changed."
+    else
+        echo -e "${_SPACE_8}No Action was taken. Execute with option ${_FG_WHITE}-i${_TX_RESET},"
+        echo -e "${_SPACE_8}when Hook should be inserted regardless"
+    fi
 }
 
 #
@@ -106,7 +106,7 @@ executionMode() {
     for line in $PWD/; do
         for directories in $line*; do
             if [ -d $directories ]; then
-                echo -e "${_FG_BLUE}Checked Folder:${_TX_RESET} ${directories##*/}"
+                echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${directories##*/}"
                 cd $directories
 
                 case $option in
