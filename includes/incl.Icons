@@ -1,4 +1,13 @@
-source ~/.local/share/fonts/i_material.sh
-source ~/.local/share/fonts/i_oct.sh
-source ~/.local/share/fonts/i_pom.sh
+source ~/.local/share/fonts/i_cod.sh
 source ~/.local/share/fonts/i_dev.sh
+source ~/.local/share/fonts/i_fa.sh
+source ~/.local/share/fonts/i_fae.sh
+source ~/.local/share/fonts/i_iec.sh
+source ~/.local/share/fonts/i_logos.sh
+source ~/.local/share/fonts/i_material.sh
+source ~/.local/share/fonts/i_md.sh
+source ~/.local/share/fonts/i_oct.sh
+source ~/.local/share/fonts/i_ple.sh
+source ~/.local/share/fonts/i_pom.sh
+source ~/.local/share/fonts/i_seti.sh
+source ~/.local/share/fonts/i_weather.sh
