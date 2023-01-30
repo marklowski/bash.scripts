@@ -7,6 +7,7 @@
 _CONFIG_FILE=$HOME/.local/share/script-settings/pushProjects.cfg
 source ~/.config/script-settings/sshData.cfg
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.pushProjects
 
 #
 # Global Variables
@@ -24,11 +25,11 @@ pushProjects () {
     counter=1
     clear
 
-    echo -e "${_FG_BLUE}INFO:${_TX_RESET} Cycling through config file\n"
+    echo -e "${_FG_BLUE}${i_fa_info} INFO:${_TX_RESET} Cycling through config file\n"
 
     for line in $_PROJECTS; do
         if [ $counter -gt 3 ]; then
-            echo -e "${_FG_YELLOW}INFO:${_TX_RESET} Delay of 30 Seconds because Pi not available\n"
+            echo -e "${_FG_YELLOW}${i_fa_info} INFO:${_TX_RESET} Delay of 30 Seconds because Pi not available\n"
             counter=0
             sleep 30
         fi
@@ -51,7 +52,7 @@ pushProjects () {
 # clear config file.
 #
 clearConfig () {
-    echo -e "${_FG_BLUE}INFO:${_TX_RESET} Now clearing config file"
+    echo -e "${_FG_BLUE}${i_fa_info} INFO:${_TX_RESET} Now clearing config file"
     echo -n "" > $_CONFIG_FILE
 }
 
@@ -69,9 +70,9 @@ clearConfigRemote () {
 # list local config file.
 #
 listConfig () {
-    echo -e "${_FG_CYAN}Found the Following Projects:${_TX_RESET}"
+    echo -e "${_FG_WHITE}Found the Following Projects:${_TX_RESET}"
     for line in $_PROJECTS; do
-        echo -e "${_FG_WHITE} $line ${_TX_RESET}"
+        echo -e "${_SPACE_2}- $line"
     done
     echo ""
 }
@@ -90,7 +91,6 @@ listConfigRemote() {
 #
 printHelp() {
     echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
-    echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} get Transport Paths"
     echo -e "${_SPACE_2}${_FG_WHITE}-l: ${_TX_RESET} List Local Changes"
     echo -e "${_SPACE_2}${_FG_WHITE}-r: ${_TX_RESET} List Remote Changes"
     echo -e "${_SPACE_4}${_FG_YELLOW}args${_TX_RESET} - Available Options:"
