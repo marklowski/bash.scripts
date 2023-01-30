@@ -7,6 +7,7 @@
 _CONFIG_FILE_OPTIONS="$HOME/.config/script-settings/transportScriptOptions.cfg"
 _CONFIG_FILE_PATH="$HOME/.config/script-settings/transportScriptPath.cfg"
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.transportScript
 
 #
 # Global Variables
@@ -56,7 +57,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="K"
 
     # output cofiles header
-    echo -e "${_FG_CYAN}Transports:  $_TRANSPORT_SHORTCUT ${_TX_RESET}"
+    echo -e "${_FG_CYAN}${i_mdi_truck} Transports: $_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -65,7 +66,7 @@ returnResults() {
     _TRANSPORT_SHORTCUT="R"
 
     # output data header
-    echo -e "${_FG_CYAN}Transports:  $_TRANSPORT_SHORTCUT ${_TX_RESET}"
+    echo -e "${_FG_CYAN}${i_mdi_truck} Transports: $_TRANSPORT_SHORTCUT ${_TX_RESET}"
 
     # output paths's
     returnResult
@@ -121,7 +122,7 @@ getTransportPath() {
     done
 
     echo ""
-    echo -e "${_FG_BLUE}Displaying Transport Paths for $_TRANSPORT_NUMBER${_TX_RESET}"
+    echo -e "Displaying Transport Paths for ${_FG_BLUE}$_TRANSPORT_NUMBER${_TX_RESET}"
 
     echo -e ""
     echo -e "${_FG_YELLOW}Local System: PRP${_TX_RESET}"
@@ -203,11 +204,11 @@ confirmConfigInput() {
         case $input in
             [yY][eE][sS]|[yY])
                 addNewConfig "$identifier" "$cofilesPath" "$dataPath" "$localPath"
-                echo -e "${_FG_GREEN}Success:${_TX_RESET} Config '$identifier' was added.\n" 1>&2
+                echo -e "${_FG_GREEN}Success ${i_mdi_check}:${_TX_RESET} Config '$identifier' was added.\n" 1>&2
                 break
                 ;;
             [nN][oO]|[nN])
-                echo -e "${_FG_BLUE}INFO:${_TX_RESET} Aborting Script...\n" 1>&2
+                echo -e "${_FG_BLUE}${i_mdi_information_variant} INFO:${_TX_RESET} Aborting Script...\n" 1>&2
                 break
                 ;;
             [rR][eE][tT][rR][yY]|[rR]) handleConfig;;
@@ -225,7 +226,7 @@ handleConfig() {
     checkIdentifier=false
 
     if [[ ${#optionsArray[@]} != 0 ]]; then
-        echo -e "${_FG_BLUE}INFO:${_TX_RESET} The following Identifier's are already used:"
+        echo -e "${_FG_BLUE}${i_mdi_information_variant} INFO:${_TX_RESET} The following Identifier's are already used:"
         for item in "${optionsArray[@]}"; do
             echo "- $item"
         done
@@ -233,7 +234,7 @@ handleConfig() {
         echo ""
         checkIdentifier=true
     else
-        echo -e "${_FG_BLUE}INFO:${_TX_RESET} No Identifiers were found"
+        echo -e "${_FG_BLUE}${i_mdi_information_variant} INFO:${_TX_RESET} No Identifiers were found"
     fi
 
     read -e -p "Enter a unique System Identifier (e.g. '${_FG_YELLOW}sap1${_TX_RESET}'): " identifier
@@ -249,7 +250,7 @@ handleConfig() {
         done
     fi
 
-    echo -e "${_FG_BLUE}INFO:${_TX_RESET} With the help of TCODE 'AL11', you can find the corresponding path's."
+    echo -e "${_FG_BLUE}${i_mdi_information_variant} INFO:${_TX_RESET} With the help of TCODE 'AL11', you can find the corresponding path's."
 
   # adds '/' when not found, at last position.
   read -e -p "Enter the ${_FG_BLUE}cofiles${_TX_RESET} directory: " cofilesPath
@@ -288,7 +289,7 @@ deleteConfig() {
         sed -i "/_${identifier}_/d" $_CONFIG_FILE_PATH
         echo -e "${_FG_GREEN}Success:${_TX_RESET} Config '$identifier' was deleted."
     else
-        echo -e "${_FG_RED}INFO:${_TX_RESET} Config delete for '$identifier' was aborted."
+        echo -e "${_FG_RED}${i_mdi_information_variant} INFO:${_TX_RESET} Config delete for '$identifier' was aborted."
     fi
 }
 
