@@ -22,7 +22,7 @@ declare -a _DIRECTORIES
 # set corresponding system directory.
 #
 setSystemDirectory() {
-    PS3="dotFile System Ordner wählen: "
+    PS3="dotFile ${i_mdi_monitor} System Ordner wählen: "
 
     select option in "${_DIRECTORIES[@]##*/}"; do
         for item in "${_DIRECTORIES[@]##*/}"; do
@@ -68,7 +68,7 @@ done
   # when Item was pre selected handle standard dialog
   if [[ $_SELECTED_ITEM_INDEX == "" ]]; then
       if $_QUICK_SELECT; then
-          echo -e "${_FG_RED}Error:${_TX_RESET} The Argument ${systemDirectory^^} wasn't found!\n"
+          echo -e "${_FG_RED}${i_pom_internal_interruption} Error:${_TX_RESET} The Argument ${systemDirectory^^} wasn't found!\n"
       fi
       setSystemDirectory
   fi
@@ -128,7 +128,7 @@ checkHasTags(){
     done
 
     # pick from possible tags
-    PS3="Ein Variante vom Ordner ${_FG_BLUE}'${checkEntry%%'.'*}'${_TX_RESET} wählen: "
+    PS3="Ein Variante vom Ordner ${_FG_BLUE}${i_mdi_book_multiple_variant} '${checkEntry%%'.'*}'${_TX_RESET} wählen: "
     select option in "${tagArray[@]}"; do
         for item in "${tagArray[@]}"; do
             if [[ $item == $option ]]; then
@@ -151,7 +151,7 @@ else
       done
 
     # pick from possible tags
-    PS3="Ein Variante von der Datei ${_FG_BLUE}'${preparedEntry%%'.'*}'${_TX_RESET} wählen: "
+    PS3="Ein Variante von der Datei ${_FG_BLUE}${i_mdi_book_multiple_variant} '${preparedEntry%%'.'*}'${_TX_RESET} wählen: "
     select option in "${tagArray[@]}"; do
         for item in "${tagArray[@]}"; do
             if [[ $item == $option ]]; then
@@ -237,16 +237,16 @@ main() {
 
     prepareDirectories
 
-    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
+    echo -e "${_FG_BLUE}${i_mdi_information_variant} Info (1/3):${_TX_RESET} Directory prepartions complete!\n"
 
     linkConfigDirectory
 
-    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
+    echo -e "${_FG_BLUE}${i_mdi_information_variant} Info (2/3):${_TX_RESET} Linkings .config Directory was completed!\n"
 
     linkConfigFiles
 
-    echo -e "${_FG_BLUE}$i_mdi_information_variant Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
-    echo -e "${_FG_GREEN}$i_mdi_check Success :${_TX_RESET} setup was completed!\n"
+    echo -e "${_FG_BLUE}${i_mdi_information_variant} Info (3/3):${_TX_RESET} Linking Files within $_SELECTED_ITEM_TEXT was completed!\n"
+    echo -e "${_FG_GREEN}${i_mdi_check} Success :${_TX_RESET} setup was completed!\n"
 }
 
 #
