@@ -6,7 +6,7 @@
 #
 _CONFIG_FILE="$HOME/.config/script-settings/checkProjects.cfg"
 source $BASH_COLOR_INCL
-source $BASH_ICON_INCL
+source $BASH_ICON_INCL/incl.Icons.checkProjects
 
 #
 # Global Variables
