@@ -66,7 +66,7 @@ main() {
                     if $_COMPRESS_OUTPUT; then
                         if ! $ignoreOutput; then
                             if $outputHeader; then
-                                echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
+                                echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/} ${i_mdi_folder}"
                                 outputHeader=false
                             fi
 
@@ -74,7 +74,7 @@ main() {
                         fi
                     else
                         if $outputHeader; then
-                            echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/}"
+                            echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/} ${i_mdi_folder}"
                             outputHeader=false
                         fi
 
