@@ -6,6 +6,7 @@
 #
 _CONFIG_FILE=$HOME/.config/script-settings/logTransports.cfg
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.logTransports
 
 #
 # Global Variables
@@ -36,7 +37,7 @@ declare -a _FILES
 # decide between available directories.
 #
 dialogGetTargetDirectory() {
-    PS3="Archive Ordner wählen: "
+    PS3="${i_fa_archive} Archive Ordner wählen: "
 
     select option in "${_DIRECTORIES_SHORTEND[@]}"; do
         for item in "${_DIRECTORIES_SHORTEND[@]}"; do
@@ -77,21 +78,21 @@ getArchiveDirectory() {
 # set header log information.
 #
 dialogSetHeaderInformation() {
-    read -e -p "Enter custom Date (default: $_INIT_DATE): " taDate
+    read -e -p "Enter custom Date ${i_fa_calendar_o} (default: $_INIT_DATE): " taDate
     if [[ $taDate != "" ]]; then
         _TA_DATE=$taDate
     else
         _TA_DATE=$_INIT_DATE
     fi
 
-    read -e -p "Enter custom Time (default: $_INIT_TIME): " taTime
+    read -e -p "Enter custom Time ${i_fa_clock_o} (default: $_INIT_TIME): " taTime
     if [[ $taDate != "" ]]; then
         _TA_TIME=$taTime
     else
         _TA_TIME=$_INIT_TIME
     fi
 
-    read -e -p "Enter Description: " _TA_DESCRIPTION
+    read -e -p "Enter Description ${i_fa_pencil} : " _TA_DESCRIPTION
 
     echo ""
 }
@@ -123,7 +124,7 @@ dialogSetTransportInformation() {
     transportCounter=1
 
     for entry in "${_TRANSPORTS[@]}"; do
-        read -e -p "Enter Description ($entry): " _TRANSPORTS_DESCRIPTION[$transportCounter]
+        read -e -p "Enter Description ${i_fa_pencil} ($entry): " _TRANSPORTS_DESCRIPTION[$transportCounter]
         transportCounter=$(($transportCounter+1))
     done
     echo ""
@@ -233,18 +234,18 @@ dialogWriteLog() {
                 moveFiles
 
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-                    echo -e "${_FG_YELLOW}Finished Script ${_TX_RESET}"
+                    echo -e "${_FG_YELLOW}${i_fa_flag_checkered} Finished Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             [nN][oO]|[nN])
                 if [ "$_EXECUTION_MODE" != "SILENT" ]; then
-                    echo -e "${_FG_BLUE}Aborting Script ${_TX_RESET}"
+                    echo -e "${_FG_BLUE}${i_mdi_cancel} Aborting Script ${_TX_RESET}"
                 fi
                 break
                 ;;
             *)
-                echo -e "${_FG_RED}Invalid input... ${_TX_RESET}"
+                echo -e "${_FG_RED}${i_pom_external_interruption} Invalid input... ${_TX_RESET}"
                 echo ""
                 ;;
         esac
@@ -281,7 +282,7 @@ main() {
 
     if [ $returnValue != 0 ]; then
         echo ""
-        echo -e "${_FG_BLUE}INFO:${_TX_RESET} Aborting Script."
+        echo -e "${_FG_BLUE}${i_fa_info} INFO:${_TX_RESET} Aborting Script."
         echo -e "${_SPACE_2}No relevent Files were found!"
         return 1
     fi
