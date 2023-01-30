@@ -8,6 +8,7 @@
 _CONFIG_FILE=$HOME/.config/script-settings/sshData.cfg
 source $_CONFIG_FILE
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.gitAddRemote
 
 #
 # Global Variables
@@ -91,7 +92,7 @@ initializeScript() {
     echo "_RASPI_PATH=" >> $_CONFIG_FILE
 
 
-    echo -e "${_FG_GREEN}Success:${_TX_RESET} sshData.cfg was create at ~/.config/script-settings."
+    echo -e "${_FG_GREEN}Success ${i_mdi_check}:${_TX_RESET} sshData.cfg was create at ~/.config/script-settings."
     echo -e "${_SPACE_2}Configure the corresponding ssh files"
 }
 
@@ -100,11 +101,11 @@ initializeScript() {
 #
 printHelp() {
     echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
-    echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} create Config File"
-    echo -e "${_SPACE_2}${_FG_WHITE}-b: ${_TX_RESET} Update Bitbucket Remote"
-    echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} Update Github Remote"
-    echo -e "${_SPACE_2}${_FG_WHITE}-r: ${_TX_RESET} Update Raspberry Remote"
-    echo -e "${_SPACE_2}${_FG_WHITE}-i: ${_TX_RESET} Interactive Update"
+    echo -e "${_SPACE_2}${_FG_WHITE}-c: ${_TX_RESET} create ${i_seti_config} Config File"
+    echo -e "${_SPACE_2}${_FG_WHITE}-b: ${_TX_RESET} Update ${i_dev_bitbucket} Bitbucket Remote"
+    echo -e "${_SPACE_2}${_FG_WHITE}-g: ${_TX_RESET} Update ${i_dev_github_badge} Github Remote"
+    echo -e "${_SPACE_2}${_FG_WHITE}-r: ${_TX_RESET} Update ${i_dev_rasberry_pi} Raspberry Remote"
+    echo -e "${_SPACE_2}${_FG_WHITE}-i: ${_TX_RESET} ${i_custom_default} Interactive Update"
     echo -e "${_SPACE_4}${_FG_YELLOW}arg: ${_TX_RESET} git remote name"
 }
 
