@@ -7,6 +7,15 @@
 _CONFIG_FILE=$HOME/.config/script-settings/sshData.cfg
 source $_CONFIG_FILE
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.createProject
+
+#
+# Output Constants
+#
+_OUTPUT_LOCAL="${_FG_YELLOW}${i_fa_home} Local${_TX_RESET}"
+_OUTPUT_RASPBERRY_PI="${_FG_YELLOW}${i_dev_rasberry_pi} RaspberryPi${_TX_RESET}"
+_OUTPUT_GITHUB="${_FG_YELLOW}${i_dev_github_badge} Github${_TX_RESET}"
+_OUTPUT_GITLAB="${_FG_YELLOW}${i_fa_gitlab} Gitlab${_TX_RESET}"
 
 #
 # Global Variables
@@ -27,8 +36,8 @@ _CREATE_GITLAB=false
 #
 chooseVisibility() {
     echo "Choose between the following options:"
-    echo -e "${_SPACE_2}p | Private Repository"
-    echo -e "${_SPACE_2}P | Public Repository"
+    echo -e "${_SPACE_2}${i_oct_repo}p | Private Repository"
+    echo -e "${_SPACE_2}${i_oct_mark_github}P | Public Repository"
 
     while true
     do
@@ -42,8 +51,8 @@ chooseVisibility() {
             *)
                 echo -e "${_FG_RED}Error:${_TX_RESET}Invalid input...\n" 1>&2
                 echo "Choose between the following options:"
-                echo -e "${_SPACE_2}p | Private Repository"
-                echo -e "${_SPACE_2}P | Public Repository"
+                echo -e "${_SPACE_2}${i_oct_repo}p | Private Repository"
+                echo -e "${_SPACE_2}${i_oct_mark_github}P | Public Repository"
                 ;;
         esac
     done
@@ -166,7 +175,7 @@ checkMandatory() {
         if [ ! -d $_REPOSITORY_PATH ]; then
             echo ""
             echo -e "${_FG_RED}Error:${_TX_RESET} Local Repository not found, to fix add the following Option" >&2;
-            echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
+            echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_OUTPUT_LOCAL} Repository" >&2;
             return 1
         else
             cd $_REPOSITORY_PATH
@@ -180,10 +189,10 @@ checkMandatory() {
   # check if a create flag was supplied.
   if ( ! $_CREATE_LOCAL && ! $_CREATE_RASPBERRY_PI && ! $_CREATE_GITHUB && ! $_CREATE_GITLAB ); then
       echo -e "${_FG_RED}Error:${_TX_RESET} For Project Creation Option one of the following options needs to be supplied:" >&2;
-      echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository" >&2;
-      echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_FG_YELLOW}RaspberryPi${_TX_RESET} Repository" >&2;
-      echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_FG_YELLOW}Github${_TX_RESET} Repository" >&2;
-      echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_FG_YELLOW}Gitlab${_TX_RESET} Repository" >&2;
+      echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_OUTPUT_LOCAL} Repository" >&2;
+      echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_OUTPUT_RASPBERRY_PI} Repository" >&2;
+      echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_OUTPUT_GITHUB} Repository" >&2;
+      echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_OUTPUT_GITLAB} Repository" >&2;
       return 1
   fi
 
@@ -196,28 +205,28 @@ checkMandatory() {
 #
 printHelp() {
     echo -e "${_FG_CYAN}Listing Help: ${_TX_RESET}"
-    echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_FG_YELLOW}Local${_TX_RESET} Repository"
-    echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_FG_YELLOW}RaspberryPi${_TX_RESET} Repository"
-    echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_FG_YELLOW}Github${_TX_RESET} Repository"
-    echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_FG_YELLOW}Gitlab${_TX_RESET} Repository"
-    echo -e "${_SPACE_2}${_FG_WHITE}-n:${_TX_RESET} This Option is ${_FG_RED}mandatory${_TX_RESET} to supply the Repository Name"
+    echo -e "${_SPACE_2}${_FG_WHITE}-l:${_TX_RESET} Create ${_OUTPUT_LOCAL} Repository"
+    echo -e "${_SPACE_2}${_FG_WHITE}-r:${_TX_RESET} Create ${_OUTPUT_RASPBERRY_PI} Repository"
+    echo -e "${_SPACE_2}${_FG_WHITE}-g:${_TX_RESET} Create ${_OUTPUT_GITHUB} Repository"
+    echo -e "${_SPACE_2}${_FG_RED}-G:${_TX_RESET} Create ${_OUTPUT_GITLAB} Repository"
+    echo -e "${_SPACE_2}${_FG_WHITE}-n:${_TX_RESET} This Option is ${_FG_RED}mandatory ${i_pom_internal_interruption}${_TX_RESET} to supply the Repository Name"
     echo -e "${_SPACE_6}${_FG_YELLOW}arg:${_TX_RESET} Repository Name"
     echo ""
     echo -e "${_FG_MAGENTA}Examples: ${_TX_RESET}"
     echo -e "${_SPACE_2}createProject.sh -lrn ${_FG_BLUE}<Repository Name>${_TX_RESET}"
-    echo -e "${_SPACE_4}-l | create Local Repository"
-    echo -e "${_SPACE_4}-r | create RaspberryPi Repository"
-    echo -e "${_SPACE_4}-n | set Repository Name"
+    echo -e "${_SPACE_4}-l | create ${_OUTPUT_LOCAL} Repository"
+    echo -e "${_SPACE_4}-r | create ${_OUTPUT_RASPBERRY_PI} Repository"
+    echo -e "${_SPACE_4}-n | set ${i_oct_repo} Repository Name"
     echo ""
     echo -e "${_SPACE_2}createProject.sh -lgn ${_FG_BLUE}<Repository Name>${_TX_RESET}"
-    echo -e "${_SPACE_4}-l | create Local Repository"
-    echo -e "${_SPACE_4}-g | create Github Repository"
-    echo -e "${_SPACE_4}-n | set Repository Name"
+    echo -e "${_SPACE_4}-l | create ${_OUTPUT_LOCAL} Repository"
+    echo -e "${_SPACE_4}-g | create ${_OUTPUT_GITHUB} Repository"
+    echo -e "${_SPACE_4}-n | set ${i_oct_repo} Repository Name"
     echo ""
     echo -e "${_SPACE_2}createProject.sh -rgn ${_FG_BLUE}<Repository Name>${_TX_RESET}"
-    echo -e "${_SPACE_4}-r | create RaspberryPi Repository"
-    echo -e "${_SPACE_4}-g | create Github Repository"
-    echo -e "${_SPACE_4}-n | set Repository Name"
+    echo -e "${_SPACE_4}-r | create ${_OUTPUT_RASPBERRY_PI} Repository"
+    echo -e "${_SPACE_4}-g | create ${_OUTPUT_GITHUB} Repository"
+    echo -e "${_SPACE_4}-n | set ${i_oct_repo} Repository Name"
     echo ""
 }
 
