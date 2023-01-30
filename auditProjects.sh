@@ -5,6 +5,7 @@
 # Include's
 #
 source $BASH_COLOR_INCL
+source $BASH_ICON_INCL
 
 #
 # Global Variables
@@ -28,9 +29,9 @@ listProjects() {
 
             if [[ -d "$_NODE_BASED" || -f "$_FILE_BASED" ]]; then
                 if [[ -f "$_PNPM_BASED" ]]; then
-                    nodeVariant="${_FG_YELLOW}pnpm${_TX_RESET} project"
+                    nodeVariant="${_FG_YELLOW}$i_dev_code pnpm${_TX_RESET} project"
                 elif [[ -f "$_NPM_BASED" ]]; then
-                    nodeVariant="${_FG_RED} npm${_TX_RESET} project"
+                    nodeVariant="${_FG_RED}$i_dev_npm  npm${_TX_RESET} project"
                 else
                     nodeVariant="${_FG_RED}required *-lock* file is missing${_TX_RESET}"
                 fi
