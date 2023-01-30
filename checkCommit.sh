@@ -5,7 +5,7 @@
 # Include's
 #
 source $BASH_COLOR_INCL
-source $BASH_ICON_INCL
+source $BASH_ICON_INCL/incl.Icons.checkCommit
 
 gitRemote=$1
 gitBranch=$( git branch --show-current )
