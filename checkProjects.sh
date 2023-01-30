@@ -70,7 +70,7 @@ main() {
                                 outputHeader=false
                             fi
 
-                            echo -e "${directories##*/}:$msg${_TX_RESET}"
+                            echo -e "${_SPACE_2}${directories##*/}:$msg${_TX_RESET}"
                         fi
                     else
                         if $outputHeader; then
@@ -78,7 +78,7 @@ main() {
                             outputHeader=false
                         fi
 
-                        echo -e "${directories##*/}:$msg${_TX_RESET}"
+                        echo -e "${_SPACE_2}${directories##*/}:$msg${_TX_RESET}"
                     fi
 
                     cd ..
