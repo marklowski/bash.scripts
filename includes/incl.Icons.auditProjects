@@ -1,0 +1,4 @@
+source ~/.local/share/fonts/i_material.sh
+source ~/.local/share/fonts/i_oct.sh
+source ~/.local/share/fonts/i_pom.sh
+source ~/.local/share/fonts/i_dev.sh

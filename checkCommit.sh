@@ -1,6 +1,12 @@
 #! /usr/bin/bash
 # Check if current branch is ahead/behind
 
+#
+# Include's
+#
+source $BASH_COLOR_INCL
+source $BASH_ICON_INCL/incl.Icons.checkCommit
+
 gitRemote=$1
 gitBranch=$( git branch --show-current )
 
@@ -11,14 +17,14 @@ base=$( git merge-base $localBranch $remoteBranch )
 localRef=$( git rev-parse $localBranch )
 remoteRef=$( git rev-parse $remoteBranch )
 
-echo Checked Git Remote $gitRemote with Branch $gitBranch
+echo -e "Checked Git Remote '${_FG_BLUE}$gitRemote${_TX_RESET}' with Branch '${_FG_BLUE}$gitBranch${_TX_RESET}'"
 
 if [[ "$localRef" == "$remoteRef" ]]; then
-  echo up-to-date
+    echo -e "${_FG_BLUE}up-to-date ${i_mdi_check}${_TX_RESET}"
 elif [[ "$localRef" == "$base" ]]; then
-  echo behind
+    echo -e "${_FG_YELLOW}behind ${i_oct_repo_pull}${_TX_RESET}"
 elif [[ "$remoteRef" == "$base" ]]; then
-  echo ahead
+    echo -e "${_FG_MAGENTA}ahead ${i_oct_repo_push}${_TX_RESET}"
 else
-  echo diverged
+    echo -e "${_FG_CYAN}diverged ${i_dev_git_compare}${_TX_RESET}"
 fi
