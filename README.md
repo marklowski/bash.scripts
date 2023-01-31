@@ -23,13 +23,16 @@ when the scripts are available at **~/.local/share/fonts**, then add
 the following environment variable to your shell '*rc' file.
 
 ```sh
-    export BASH_ICON_INCL=~/.local/bin/includes/incl.Icons
+    export BASH_ICON_INCL=~/.local/bin/includes/
 ```
 
-Example incl.Icons
+The different scripts have there own include files now, so no unnecessary icons get loaded.
+When icons are included within a script there should be a ```incl.Icons.<script-name>``` File within the **includes** directory.
 
+In case you want to source the Icons in your own script, you case use the following to source every Icon,
+or create your own include file with the help of a existing ```incl.Icons.<script-name>``` file.
 ```sh
-    source ~/.local/share/fonts/i_material.sh
+    source $BASH_ICON_INCL/incl.Icons
 ```
 
 ---
