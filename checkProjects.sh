@@ -38,6 +38,7 @@ postScript() {
 main() {
     ignoreOutput=true
     outputHeader=true
+    outputNoLines=true
 
     for line in $_PROJECTS; do
 
@@ -68,6 +69,7 @@ main() {
                             if $outputHeader; then
                                 echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/} ${i_mdi_folder}"
                                 outputHeader=false
+                                outputNoLines=false
                             fi
 
                             echo -e "${_SPACE_2}${directories##*/}:$msg${_TX_RESET}"
@@ -76,6 +78,7 @@ main() {
                         if $outputHeader; then
                             echo -e "${_FG_WHITE}Checked Folder:${_TX_RESET} ${line##*/} ${i_mdi_folder}"
                             outputHeader=false
+                            outputNoLines=false
                         fi
 
                         echo -e "${_SPACE_2}${directories##*/}:$msg${_TX_RESET}"
@@ -93,6 +96,14 @@ main() {
 
         outputHeader=true
     done
+
+    if $outputNoLines; then
+        if [[ $_PROJECTS == "" ]]; then
+            echo -e "${_FG_RED}Error $i_pom_external_interruption:${_TX_RESET} No Projects found within config file '~/.config/scritp-settings/checkProjects.cfg'"
+        else
+            echo -e "${_FG_CYAN} No Changes $i_mdi_check${_TX_RESET} to any repository."
+        fi
+    fi
 }
 
 #
