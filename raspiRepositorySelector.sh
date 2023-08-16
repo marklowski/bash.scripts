@@ -7,9 +7,76 @@ source $BASH_COLOR_INCL
 source ~/.config/script-settings/sshData.cfg
 
 # Get List of Repositories
-_REPOS="$(ssh git@$_RASPI_SSH "ls $_RASPI_PATH")"
+_LIST_OF_REPOSITORIES="$(ssh $_RASPI_SSH "ls $_RASPI_PATH")"
 
-echo "$_REPOS" >> test.txt
+declare -a _DIRECTORIES
+
+replace_spaces_with_linebreaks() {
+    local input_string="$_LIST_OF_REPOSITORIES"
+
+    if [[ -n "$input_string" ]]; then
+        local result_string=$(echo "$input_string" | sed 's/\x20/\n/g')
+    else
+        echo "Error: Input string is empty."
+        return 1
+    fi
+
+    echo "$result_string"
+}
+
+split_at_first_dot() {
+  local input_array=("$@")
+  local output_array=()
+
+  
+  for element in "${input_array[@]}"; do
+    if [[ "$element" == *.* ]]; then
+      output_array+=("${element%%.*}")
+    else
+      output_array+=("$element")
+    fi
+  done
+
+  echo "${output_array[@]}"
+}
+
+populate_array_with_directories() {
+  local directories="$1"
+  local output_array=()
+  
+  mapfile -t -d $'\n' output_array <<< "$directories"
+  
+  echo "${output_array[@]}"
+}
+
+remove_duplicates() {
+  local input_array=("$@")
+  local output_array=()
+
+  for element in "${input_array[@]}"; do
+    if [[ ! " ${output_array[@]} " =~ " $element " ]]; then
+      output_array+=("$element")
+    fi
+  done
+
+  echo "${output_array[@]}"
+}
+
+repositories=$(replace_spaces_with_linebreaks)
+directories=($(populate_array_with_directories "$repositories"))
+categories=($(split_at_first_dot "${directories[@]}"))
+uniqueCategories=($(remove_duplicates "${categories[@]}"))
+
+ echo "---"
+ echo "Unique categories"
+ for element in "${uniqueCategories[@]}"; do
+   echo $element
+ done
+# echo "---"
+# echo "directoryArray"
+# for element in "${directoryArray[@]}"; do
+#   echo $element
+# done
 #while getopts ":hcle:r:C:" opt; do
 #case ${opt} in
 #		h )
