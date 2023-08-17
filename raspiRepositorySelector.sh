@@ -62,16 +62,57 @@ remove_duplicates() {
   echo "${output_array[@]}"
 }
 
+getPickDirectory() {
+    local inputArray=("$@")
+    PS3="Kategorie wählen: "
+
+    select category in "${inputArray[@]}"; do
+        for item in "${inputArray[@]}"; do
+            if [[ $item == $category ]]; then
+                local resultString=$item
+                break 2
+            fi
+        done
+    done
+
+    echo "$resultString"
+}
+
+filterDirectoryByCategory() {
+    local selectedCategory="$1"
+    shift
+    local inputArray=("$@")
+    local filteredArray=()
+
+    for item in "${inputArray[@]}"; do
+        # Extract the category from the item
+        category="${item%%.*}"
+
+        # Compare the extracted category with the selected category
+        if [[ "$category" == "$selectedCategory" ]]; then
+            filteredArray+=("$item")
+        fi
+    done
+
+    echo "${filteredArray[@]}"
+}
+
 repositories=$(replace_spaces_with_linebreaks)
+
 directories=($(populate_array_with_directories "$repositories"))
+
 categories=($(split_at_first_dot "${directories[@]}"))
 uniqueCategories=($(remove_duplicates "${categories[@]}"))
 
+
+selectedCategory=($(getPickDirectory "${uniqueCategories[@]}"))
+filteredRepositories=($(filterDirectoryByCategory "$selectedCategory" "${directories[@]}"))
+
  echo "---"
- echo "Unique categories"
- for element in "${uniqueCategories[@]}"; do
+ for element in "${filteredRepositories[@]}"; do
    echo $element
  done
+
 # echo "---"
 # echo "directoryArray"
 # for element in "${directoryArray[@]}"; do
