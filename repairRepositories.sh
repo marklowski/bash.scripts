@@ -23,7 +23,7 @@ replaceSpacesWithLinebreaks() {
 populateArrayWithRepositories() {
   local directories="$1"
   local outputArray=()
-  
+
   mapfile -t -d $'\n' outputArray <<< "$directories"
   
   echo "${outputArray[@]}"
@@ -113,11 +113,11 @@ main () {
   repositoriesArray=($(populateArrayWithRepositories "$repositories"))
 
   # Clear Overview File
-  echo `{
-        "changeDate": "",
-        "changeTime": "",
-        "repositories": []
-    }` > $_CONFIG_OVERVIEW
+  echo '{
+            "changeDate": "",
+            "changeTime": "",
+            "repositories": []
+        }' > $_CONFIG_OVERVIEW
 
   for repository in "${repositoriesArray[@]}"; do
     repositoryParts=($(splitRepositoryAtDot "$repository"))
