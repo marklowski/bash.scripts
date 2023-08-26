@@ -1,6 +1,9 @@
 #!/bin/bash
 
 ## Requires: 'JQ' Package to Function correctly
+
+source $BASH_COLOR_INCL
+
 # Create git repo if not existent
 _CONFIG_SYSTEMS_FILE="$HOME/.config/script-settings/systems.json"
 _CONFIG_OVERVIEW="$HOME/repositories/overview.json"
@@ -84,13 +87,13 @@ updateJsonRepository() {
 
     # Check if required arguments are provided
     if [[ -z "$group" || -z "$repository" ]]; then
-        echo "Error: Missing arguments."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Missing arguments."
         exit 1
     fi
 
     # Check if overview.json exists
     if [[ ! -f "$_CONFIG_OVERVIEW" ]]; then
-        echo "Overview.json not found. Continuing with normal procedure."
+        echo -e "${_FG_BLUE}INFO:${_TX_RESET} Overview.json not found. Continuing with normal procedure."
         return 0
     fi
 
@@ -116,13 +119,13 @@ updateJsonRepository() {
         end' "$_CONFIG_OVERVIEW")
 
     if [[ $? != 0 ]]; then
-        echo "Error: Failed to update overview.json."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Failed to update overview.json."
         exit 1
     fi
 
     if [[ "$updated_json" != "$(cat "$_CONFIG_OVERVIEW")" ]]; then
         echo "$updated_json" > "$_CONFIG_OVERVIEW"  # Update the overview.json file
-        echo "Updated existing Repository Object."
+        echo -e "${_FG_GREEN}Success${_TX_RESET}: Updated existing Repository Object."
         exit 2
     else
         return 0
@@ -157,7 +160,7 @@ buildJsonRepository() {
           }')
 
     if [[ $? != 0 ]]; then
-        echo "Error: Failed to create JSON object."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Failed to create JSON object."
         exit 1
     fi
 
@@ -170,7 +173,7 @@ addJsonRepository() {
 
     # Check if required argument is provided
     if [[ -z "$json_object" ]]; then
-        echo "Error: Missing JSON object."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Missing JSON object."
         exit 1
     fi
 
@@ -181,7 +184,7 @@ addJsonRepository() {
                        --argjson json_object "$json_object" "$_CONFIG_OVERVIEW")
 
     if [[ $? != 0 ]]; then
-        echo "Error: Failed to update overview.json."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Failed to update overview.json."
         exit 1
     fi
 
@@ -204,12 +207,20 @@ handleJsonRepository() {
     # try to update existing Repository Object
     updateJsonRepository "$_REPOSITORY_PREFIX" "$_REPOSITORY_NAME"
 
+    if [[ ! -e $_CONFIG_OVERVIEW ]]; then
+        echo `{
+            "changeDate": "",
+            "changeTime": "",
+            "repositories": []
+        }` > $_CONFIG_OVERVIEW
+    fi
+
     # no Repository Object was found, build & create New Repository Object
     # Call the addJsonRepository function to add the Repository Object to Overview.json
     jsonRepository=$(buildJsonRepository "$_REPOSITORY_PREFIX" "$_REPOSITORY_NAME")
     addJsonRepository "$jsonRepository"
 
-    echo "Repository Object added to Overview.json."
+    echo -e "${_FG_GREEN}Success${_TX_RESET}: Repository Object added to Overview.json."
 }
 
 ## create Repository Directories
