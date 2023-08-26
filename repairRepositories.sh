@@ -3,7 +3,9 @@
 ## Requires: 'JQ' Package to Function correctly
 _CONFIG_SYSTEMS_FILE="$HOME/.config/script-settings/systems.json"
 _CONFIG_OVERVIEW="$HOME/repositories/overview.json"
-_REPOSITORY_PATH="~/repositories"
+_REPOSITORY_PATH="$HOME/repositories"
+
+source $BASH_COLOR_INCL
 
 replaceSpacesWithLinebreaks() {
     local inputString="$1"
@@ -11,7 +13,7 @@ replaceSpacesWithLinebreaks() {
     if [[ -n "$inputString" ]]; then
         local resultString=$(echo "$inputString" | sed 's/\x20/\n/g')
     else
-        echo "Error: Input string is empty."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Input string is empty."
         return 1
     fi
 
@@ -68,7 +70,7 @@ buildJsonRepository() {
           }')
 
     if [[ $? != 0 ]]; then
-        echo "Error: Failed to create JSON object."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Failed to create JSON object."
         exit 1
     fi
 
@@ -81,7 +83,7 @@ addJsonRepository() {
 
     # Check if required argument is provided
     if [[ -z "$json_object" ]]; then
-        echo "Error: Missing JSON object."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Missing JSON object."
         exit 1
     fi
 
@@ -92,7 +94,7 @@ addJsonRepository() {
                        --argjson json_object "$json_object" "$_CONFIG_OVERVIEW")
 
     if [[ $? != 0 ]]; then
-        echo "Error: Failed to update overview.json."
+        echo -e "${_FG_RED}Error${_TX_RESET}: Failed to update overview.json."
         exit 1
     fi
 
@@ -100,8 +102,8 @@ addJsonRepository() {
 }
 
 main () {
-  groupIndex=1
-  repositoryIndex=2
+  groupIndex=0
+  repositoryIndex=1
 
   # source ~/.config/script-settings/sshData.cfg
   # listOfRepositories="$(ssh $_RASPI_SSH "ls $_REPOSITORY_PATH")"
@@ -111,20 +113,24 @@ main () {
   repositoriesArray=($(populateArrayWithRepositories "$repositories"))
 
   # Clear Overview File
-  echo "" > $_CONFIG_OVERVIEW
+  echo `{
+        "changeDate": "",
+        "changeTime": "",
+        "repositories": []
+    }` > $_CONFIG_OVERVIEW
 
   for repository in "${repositoriesArray[@]}"; do
     repositoryParts=($(splitRepositoryAtDot "$repository"))
 
     if [[ $? != 0 ]]; then
-      echo "Warning: Skipped the following Entry '$repository'!"
+      echo -e "${_FG_YELLOW}Warning${_TX_RESET}: Skipped the following Entry ${_FG_BLUE}'$repository'${_TX_RESET}!"
       continue
     fi
 
     jsonRepository=$(buildJsonRepository "${repositoryParts[$groupIndex]}" "${repositoryParts[$repositoryIndex]}")
     addJsonRepository "$jsonRepository"
 
-    echo "Success: Added the following Entry '$repository'!"
+    echo -e "${_FG_GREEN}Success${_TX_RESET}: Added the following Entry ${_FG_BLUE}'$repository'${_TX_RESET}!"
   done
 }
 
