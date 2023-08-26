@@ -139,6 +139,7 @@ buildJsonRepository() {
     json_obj=$(jq -n \
         --arg group "$group" \
         --arg repository "$repository" \
+        --arg repositoryPath "$_SYMLINK_PREFIX.$group.$repository.git" \
         --arg creationDate "$(date +"%Y-%m-%d")" \
         --arg creationTime "$(date +"%H:%M:%S")" \
         --arg changeDate "" \
@@ -147,6 +148,7 @@ buildJsonRepository() {
         '{
             "group": $group,
             "repository": $repository,
+            "repositoryPath": $repositoryPath,
             "creationDate": $creationDate,
             "creationTime": $creationTime,
             "changeDate": $changeDate,
