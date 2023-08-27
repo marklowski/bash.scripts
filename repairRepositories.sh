@@ -53,7 +53,7 @@ buildJsonRepository() {
     jsonRepository=$(jq -n \
         --arg group "$group" \
         --arg repository "$repository" \
-        --arg repositoryPath "$repositoryPath.$group.$repository.git" \
+        --arg repositoryPath "$repositoryPath/$group.$repository.git" \
         --arg creationDate "$(date +"%Y-%m-%d")" \
         --arg creationTime "$(date +"%H:%M:%S")" \
         --arg changeDate "" \
