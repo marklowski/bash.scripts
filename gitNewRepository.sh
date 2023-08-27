@@ -236,7 +236,7 @@ createRepository() {
 
     # add git initialization & hooks
     git init --bare
-    cp $_POST_RECEIVE_HOOK ./hooks
+    ln -s $_POST_RECEIVE_HOOK ./hooks
 
     # add symlink
     ln -s $_DIRECTORY_PATH $_SYMLINK_PATH
