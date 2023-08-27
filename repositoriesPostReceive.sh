@@ -2,19 +2,6 @@
 
 _CONFIG_OVERVIEW="$HOME/repositories/overview.json"
 
-splitRepositoryAtDot() {
-  local inputString="$1"
-  local outputArray=()
-
-  parts=($(echo "$inputString" | tr '.' ' '))
-
-  if [ "${#parts[@]}" -le 2 ]; then
-      return 1
-  fi
-
-  echo "${parts[@]}"
-}
-
 updateJsonRepository() {
     local group="$1"
     local repository="$2"
@@ -67,19 +54,17 @@ updateJsonRepository() {
 }
 
 main () {
-  groupIndex=0
-  repositoryIndex=1
-  currentDirectory=${PWD##*/}
-  currentUser=$USER
+  group=$(basename $(dirname "$PWD"))
 
-  splitRepositoryAtDot "$currentDirectory"
+  directoryName=${PWD##*/}
+  repository=${directoryName%.*}
 
   if [[ $? != 0 ]]; then
     echo -e "${_FG_YELLOW}Warning${_TX_RESET}: Skipped the following Entry ${_FG_BLUE}'$repository'${_TX_RESET}!"
     continue
   fi
 
-  updateJsonRepository "${repositoryParts[$groupIndex]}" "${repositoryParts[$repositoryIndex]}"
+  updateJsonRepository "$group" "$repository"
 }
 
 main 
