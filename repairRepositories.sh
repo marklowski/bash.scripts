@@ -47,12 +47,13 @@ buildJsonRepository() {
     local group="$1"
     local repository="$2"
     local systems=$(jq -c '.systems' "$_CONFIG_SYSTEMS_FILE")
+    local repositoryPath="~/repositories"
 
     # Create the JSON object
     jsonRepository=$(jq -n \
         --arg group "$group" \
         --arg repository "$repository" \
-        --arg repositoryPath "$_SYMLINK_PREFIX.$group.$repository.git" \
+        --arg repositoryPath "$repositoryPath.$group.$repository.git" \
         --arg creationDate "$(date +"%Y-%m-%d")" \
         --arg creationTime "$(date +"%H:%M:%S")" \
         --arg changeDate "" \
